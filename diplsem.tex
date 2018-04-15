@@ -20,25 +20,53 @@
 
 
 
-\chapter{Poglavlja seminara}
-TODO
 \chapter{Uvod}
-TODO
+Prevođenje slika klasa je problema računalnog vida kojom želimo naučiti funkciju mapiranja između parova slika. Korist te funkcije možemo naći u generiranju novih uzoraka sa željenim zančajkama, identifikaciji postojećih značajki... Jedna od najkorištenijih i najmoćnijih metoda današnjice su suparnički modeli koje ćemo detaljnije razraditi u ovom seminaru.
+
+
+
 \chapter{Duboke mreže}
-TODO
+Pristup dobokog učenja posebice je prigodan pri radu sa slikama zahvaljujući njegovoj sposobnosti lokalizacije piksela i slojevitom pristupu pri rastavljanju slike na osnovne građevne jedinice.
+\newline
+Konvolucija neuronskom mrežom segmentira podatke 
+
+
+
 \chapter{Generativni suparnički modeli}
-TODO
+GANovi su podvrsta dubokih mreža čija arhitektura se bazira na dvije podmreže koje se uče kroz međusobno natjecanje. Tako nespecifični model u stanju je kopirati distribuciju širokog spektra podataka: slika, govora, muzike, čak i pisanih zapisa.
+\newline
+Tip učenja po kojem su dobile naziv je generativne prirode. Problem koji riješavaju je kako dobiti X uz dani Y, tj. pokušavaju naučiti distribuciju pojedinih klasa p(X|Y).
+\newline
+Pola mreže bavi se stvaranjem novih podataka dok druga polovica pokušava evaluirati koliko su slični stvarnim podatcima.
+Cijeli proces usporedljiv je s poslovima detektiav i kriminalca. Jedna strana u bavi se falsifikacijom dokaza, a druga analizom njihove autentičnosti.
+\newline
+Koraci rada GANa:
+ - generator iz nasumičnih brojeva stvara sliku
+ - ta slika se dovodi na ulaz diskriminatora uz skup stvarnih slika iz podatkovnog skupa
+ - diskriminator određuje postotak vjerojatnosti da je slika prava
+
+
+
 \chapter{Uvjetne generativne mreže}
-TODO 
+Uvjetne generativne mreže pokazale su se kao generalno rješenje problema prevođenja slike [pix2pix]. Svojstvene su po učenju ne samo funkcije prijenosa između slika već i funkcije gubitka nad kojom se ona trenira.
+Dok se u drugim modelima ona ručno zadaje, pristup u kojem se ona uči omogučuje generalizaciju nad setovima problema koji bi u suprotnom zahtijevali vrlo drugačije formulacije gubitka.
+\newline
+Neke od mogućnosti uvjetnih GAN-ova su sinteza fotorealističnih slika iz skica, generiranje objekata na temelju njihovih obruba te bojanje crno bijelih fotografija.
+
+
+
 \chapter{Translacija bez uparenih primjera za učenje pomoću kružnih GAN-ova}
-TODO
+
+
+
+
 \chapter{Prijenos stila}
-TODO
+
 
 
 
 \chapter{Zaključak}
-TODO
+
 
 
 
