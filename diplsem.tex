@@ -58,9 +58,6 @@ Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj je svaki sloj zadu�
 \end{figure}
 
 \chapter{Generativni suparnički modeli (GAN-ovi)}
-GAN-ovi su podvrsta dubokih mreža čija arhitektura se bazira na dvije podmreže koje uče kroz međusobno natjecanje. Tako nespecifični model, ovisno o implementaciji, u stanju je kopirati distribuciju širokog spektra podataka: slika, govora, muzike, čak i pisanih zapisa.
-\newline
-
 \section{Generativni naspram diskriminativnih algoritama}
 Dvije temeljne skupine koijima dijelimo algoritme za učenje su diskriminativni i generativni.
 Njihovi nazivi dolaze izravno iz vrste problema koji riješavaju: 
@@ -72,6 +69,10 @@ Generativni modeli, kao što im i naziv govori, generativne su prirode. Problem 
 \newline
 
 Drugim riječima, dok diskriminativni modeli pokušavaju pronaći granicu između klasa, generativni modeliraju distribucije pojedinih klasa na temelju kojih mogu uzorkovati nove primjere.
+\newline
+
+\section{Suparnički modeli}
+Iz prethodnog poglavlja, očito je da su generativni algoritmi svestranije naravi od diskriminativnih, no to dolazi sa neizbježnim povećanjem složenosti. Pronalazak ciljne distribucije u dubokim hijerarhijskim podatcima sastoji se na od aproksimiranja neizvodljivih problema[goodfellow2014generative]. Riješenje tog problema pronađeno je u suparničkim modelima. Oni su podvrsta dubokih mreža čija arhitektura se bazira na dvije podmreže koje uče kroz međusobno natjecanje. Ovisno o implementaciji, mreža takve arhitekture u stanju je kopirati distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
 \newline
 
 \section{Rad GAN-a}
@@ -89,9 +90,13 @@ Koraci rada GANa:
 
 
 \chapter{Uvjetne generativne mreže}
-Uvjetne generativne mreže pokazale su se kao generalno rješenje problema prevođenja slike [pix2pix]. Svojstvene su po učenju ne samo funkcije prijenosa između slika već i funkcije gubitka nad kojom se ona trenira.
+\section{Generalizacija problema prevođenja slike}
+Uvjetne generativne mreže pokazale su se kao generalno rješenje problema prevođenja slike [isola2017image]. Svojstvene su po učenju ne samo funkcije prijenosa između slika već i funkcije gubitka nad kojom se ona trenira.
 Dok se u drugim modelima ona ručno zadaje, pristup u kojem se ona uči omogučuje generalizaciju nad setovima problema koji bi u suprotnom zahtijevali vrlo drugačije formulacije gubitka.
 \newline
+
+\section{Pristup prevođenju slike}
+Analogno prevođenju teksta u drugi jezik zadržavajući određeni kontekst, prevođenje slike odnosi se na translaciju scene u drugačiju reprezentaciju. To se odnosi na mnogobrojne probleme za koje postoje zasebne metode riješavanja poput izmjene pozadine, lica ili promjene boje. No, u srži svih njih može se prepoznati jedinstven problem: naći funkciju preslikavanja piksela u piksel. Tokom učenja, lošim definiranjem te funkcije, nikad nećemo dobiti realistične rezultate. GANovi pristupaju tome tako da odbacuju sva riješenja koja se mogu razlikovati od stvarnosti generirajući slike $y$ iz nasumičnog šuma $z$ : $G: z \rightarrow y$. Poboljšanje nad tom metodom dobivamo uz uvjetovanje ulaznih podataka, tj. uz dodavanja uvjeta na šum da mora sličiti stvarnoj distribuciji. To se postiže dodavanjem slike $x$ slične željenoj na ulaz sustava $G: {x,z} \rightarrow y$ [isola2017image].
 
 \section{Primjena}
 Neke od mogućnosti uvjetnih GAN-ova su sinteza fotorealističnih slika iz skica, generiranje objekata na temelju njihovih obruba te bojanje crno bijelih fotografija.
@@ -114,9 +119,9 @@ Temelj njihovog rada je uz da uz učenje funkcije $G: X \rightarrow Y$, istovrem
 
 
 \chapter{Zaključak}
-
-
-
+...
+Uvjetnim suparničkim mrežama pokazano je da osim što više nije potrebno ručno izvoditi funkcije preslikavanja, zadovoljavajuće rezultate možemo dobiti i ako dubokoj mreži prepustimo da sama nauči funkciju gubitka. To je velik korak prema široj adaptaciji ove tehnologije upravo zato što uklanja potrebu za inžinjerom i omogućava ljudima poput umjetnika i mladih znanstvenika da ju koriste samostalno.
+...
 
 \bibliography{literatura}
 \bibliographystyle{fer}
