@@ -66,33 +66,40 @@ Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj je svaki sloj zadu�
 \chapter{Generativni suparnički modeli (GAN-ovi)}
 \section{Generativni naspram diskriminativnih algoritama}
 Dvije temeljne skupine koijima dijelimo algoritme za učenje su diskriminativni i generativni.
-Njihovi nazivi dolaze izravno iz vrste problema koji riješavaju: 
+Nazivi tih algoritama dolaze izravno iz vrste problema koji riješavaju: 
 \newline
 
-Diskriminativni modeli direktno mapiraju ulazne varijable na ciljne vrijednosti i time uče uvjetnu vjerojatnost $p(Y|X)$. Dobiveni model svrstava podatke u ciljne klase s određenom vjerojatnošću.
+% setting item mark to bullet
+\renewcommand{\labelitemi}{\textbullet}
+\begin{itemize} 
+\item Diskriminativni modeli baziraju se na modeliranju isključivo pomoću ulaznih varijabli koje direktno mapiraju na ciljne vrijednosti i time uče uvjetnu vjerojatnost $p(Y|X)$. Ne stvaraju puno pretpostavki o podložnoj distribuciji, no vrlo su ovisni o kvalitetnim podatcima. 
+%Dobiveni model svrstava podatke u ciljne klase s određenom vjerojatnošću.
 
-Generativni modeli, kao što im i naziv govori, generativne su prirode. Problem koji riješavaju je kako dobiti $X$ uz dani $Y$, tj. pokušavaju naučiti distribuciju pojedinih klasa $p(X \mid Y)$.
+\item Generativni modeli riješavaju problem kako dobiti $X$ uz dani $Y$, tj. pokušavaju naučiti distribuciju pojedinih klasa $p(X\mid Y)$.
 \newline
+\end{itemize}
 
 Drugim riječima, dok diskriminativni modeli pokušavaju pronaći granicu između klasa, generativni modeliraju distribucije pojedinih klasa na temelju kojih mogu uzorkovati nove primjere.
 \newline
 
 \section{Suparnički modeli}
-Iz prethodnog poglavlja, očito je da su generativni algoritmi svestranije naravi od diskriminativnih, no to dolazi sa neizbježnim povećanjem složenosti. Pronalazak ciljne distribucije u dubokim hijerarhijskim podatcima sastoji se na od aproksimiranja neizvodljivih problema[goodfellow2014generative]. Riješenje tog problema pronađeno je u suparničkim modelima. Oni su podvrsta dubokih mreža čija arhitektura se bazira na dvije podmreže koje uče kroz međusobno natjecanje. Ovisno o implementaciji, mreža takve arhitekture u stanju je kopirati distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
+U praksi se pokazalo kako diskriminativni modeli postižu bolje rezultate od generativnih. Iako je očito da su generativni algoritmi svestranije naravi od diskriminativnih, to dolazi sa neizbježnim povećanjem složenosti koja proizlazi iz toga što se pronalazak ciljne distribucije u dubokim hijerarhijskim podatcima sastoji od aproksimiranja problema čija riješenja matematički nije moguće izvesti[goodfellow2014generative]. Bez toga, nije moguće ni podesiti model da radi pri svom optimumu. Odgovor na predstavljenu složenost pronađen je u suparničkim modelima čiji rad se bazira na istovremenom učenju dvije podmreže. Ovisno o implementaciji, mreža takve arhitekture u stanju je kopirati distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
 \newline
 
 \section{Rad GAN-a}
-Pola mreže bavi se stvaranjem novih podataka dok druga polovica pokušava evaluirati koliko su slični stvarnim podatcima.
+Ideja generativnih suparničkih modela je da se istovremeno uče dvije mreže.
+Pola mreže (generator $G$) bavi se stvaranjem novih podataka iz neke jednostavne distribucije $Z$ s ciljem da stvoreni podatci budu čim sličniji stvarnima. Paralelno s njegovim radom, druga polovica (diskriminator $D$) pokušava evaluirati koliko su uzorci $G(Z)$ slični stvarnim podatcima $Y$. Drugim riječima, dok $G$ pokušava minimizirati izlaz $D-a$, $D$ ga pokušava maksimizirati.
 Cijeli proces usporedljiv je s poslovima detektiav i kriminalca. Jedna strana u bavi se falsifikacijom dokaza, a druga analizom njihove autentičnosti.
 \newline
 
 Koraci rada GANa:
 \begin{enumerate} 
-\item generator iz nasumičnih brojeva stvara sliku
-\item ta slika se dovodi na ulaz diskriminatora uz skup stvarnih slika iz podatkovnog skupa
-\item diskriminator određuje postotak vjerojatnosti da je slika prava
+\item generator $G$ iz nasumičnih brojeva (šum) $Z$ stvara sliku $G(Z)$
+\item ta slika se dovodi na ulaz diskriminatora $D$ uz skup stvarnih slika iz podatkovnog skupa $Y$
+\item diskriminator $D$ određuje postotak vjerojatnosti da je slika $G(Z)$ prava
 \end{enumerate}
 
+\section{GAN-ovi naspram autoenkodera}
 
 
 \chapter{Uvjetne generativne mreže}
@@ -109,14 +116,18 @@ Neke od mogućnosti uvjetnih GAN-ova su sinteza fotorealističnih slika iz skica
 
 
 
-\chapter{Translacija bez uparenih primjera za učenje pomoću kružnih GAN-ova}
-\section{Prednosti}
+\chapter{Translacija bez uparenih primjera za učenje}
+\section{Kružni GAN-ovi}
+
+\subsection{Prednosti}
 Većina postojećih algoritama korištenih u računalnom vidu ovisi o postojanju velikih podatkovnih setova označenih parova slika. No, za mnoge probleme takvi podatci nisu dostupni, a u takvim situacijama primjenu nalaze kružni GANovi.
 \newline
 
-\section{Rad CycleGAN-a}
+\subsection{Rad CycleGAN-a}
 Temelj njihovog rada je uz da uz učenje funkcije $G: X \rightarrow Y$, istovremeno uče njen inverz $F: X \rightarrow Y$ pomoću gubitka cikličke dosljednosti: $F(G(X)) \approx X$ i obrnuto.
-\section{Primjena}
+
+\section{Multimodalna translacija (MUNIT)}
+Druge metode nenadziranog učenja translacije ne uzimaju u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna [huang2018multimodal] što kao poslijedicu ima da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju sa nasumičnim stilskim kodom uzorkovanim s ciljne domene.
 
 
 \chapter{Prijenos stila}
@@ -129,9 +140,14 @@ Postoji još jedan faktor koji povećava kompleksnost cijelog procesa, a to je d
 
 
 \chapter{Zaključak}
+Generativni modeli tema su mnogobrojnih istraživanja i vrlo obečavajuća metoda učenja 'prirodnih' značajki podataka. Uz napretke koji se redovno postižu u njihovom unaprijeđenju, velika je vjerojatnost da će ubrzo biti u stanju generirati uzorke nerazlučive od stvarnosti. Time primjenu pronalaze u područjima poput stvaranja virtualnih svijetova bez ljudske intervencije, izvršavanja modifikacija nad slikama pomoću jednostavnog govora, regeneriranju oštećenih podataka ili stvaranju novih za buduća istraživanja.
+\newline
+
 ...
 Uvjetnim suparničkim mrežama pokazano je da osim što više nije potrebno ručno izvoditi funkcije preslikavanja, zadovoljavajuće rezultate možemo dobiti i ako dubokoj mreži prepustimo da sama nauči funkciju gubitka. To je velik korak prema široj adaptaciji ove tehnologije upravo zato što uklanja potrebu za inžinjerom i omogućava ljudima poput umjetnika i mladih znanstvenika da ju koriste samostalno.
 ...
+\newline
+
 
 \bibliography{literatura}
 \bibliographystyle{fer}
