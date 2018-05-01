@@ -23,9 +23,15 @@
 
 
 \chapter{Uvod}
-Generiranje slika na temelju skice, prijenos stilova i rekonstrukcija fotografije samo su neki od problema računalnog vida. Pri njihovom rješavanju uglavnom želimo naučiti funkciju mapiranja između parova slika koju zatim koristimo za efikasnu identifikaciju značajki ili po potrebi, njihovo generiranje. 
+Razvojem tehnika namjenjenih identifikaciji i analizi slika, logični sljedeći korak unutar područja računalnog vida bio je osmišljavanje algoritama kojima bi se omogućila reprodukcija vizualnih sadržaja. 
+\newline
 
-Među najkorištenijim i najuspješnijim arhitekturama današnjice nalaze se generativni suparnički modeli. Ovim radom istražiti će se različita proširenja kojima se ti modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene.
+Generiranje slika na temelju skice, prijenos stilova i rekonstrukcija fotografije neke su od primjena dotičnog problema. Najznačajniji pomak u tome području ostvario je Ian Goodfellow et al. 2014. g. [goodfellow2014generative] osmišljavanjem generativhin suparničkih modela čiji tipičan cilj je učenje funkcije preslikavanja iz prostora latentnih varijabli na željenu distribuciju.
+
+Dobivena distribucija, osim za generiranje novih primjera, primjenjiva je i na rješavanje prvotno navedenih problema identifikacije značajki na postojećim slikama. Ta fleksibilnost čini ovaj algoritam izuzetno popularnim za istraživanje što je rezultiralo njegovim mnogobrojnim modifikacijama i poboljšanjima.
+\newline
+
+Ovim radom istražiti će se različita proširenja kojima se ti modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene.
 
 \chapter{Duboke mreže}
 Duboke neuronske mreže zadnjih godina izuzetno su popularne u rješavanju klasifikacijskih problema i pronalaženju uzoraka. Tome je zaslužna prednost koju imaju naspram klasičnih pristupa, a koja se očituje u vidu mogućnosti da samostalno pronalaze bitne značajke u podatcima te na temelju njih i tražena rješenja.
