@@ -127,7 +127,11 @@ Većina postojećih algoritama korištenih u računalnom vidu ovisi o postojanju
 Temelj njihovog rada je uz da uz učenje funkcije $G: X \rightarrow Y$, istovremeno uče njen inverz $F: X \rightarrow Y$ pomoću gubitka cikličke dosljednosti: $F(G(X)) \approx X$ i obrnuto.
 
 \section{Multimodalna translacija (MUNIT)}
-Druge metode nenadziranog učenja translacije ne uzimaju u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna [huang2018multimodal] što kao poslijedicu ima da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju sa nasumičnim stilskim kodom uzorkovanim s ciljne domene.
+Poveća mana spomenutih načina translacije je manjak raznolikosti u translatiranim izlazima. One ne uzimaju u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna \cite{huang2018multimodal} što kao poslijedicu ima da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju sa nasumičnim stilskim kodom uzorkovanim s ciljne domene.
+\newline
+
+Pri podjeli reprezentacija sadržaja i stila, sadržaj se odnosi na prostornu strukturu dok je stil ograničen na rendering te strukture.
+%A concurrent work also recognizes this limitation and propose an extension of CycleGAN for multimodal mapping \cite{almahairi2018augmented}
 
 
 \chapter{Prijenos stila}
