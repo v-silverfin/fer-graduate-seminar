@@ -23,26 +23,30 @@
 
 
 \chapter{Uvod}
-Razvojem tehnika namjenjenih identifikaciji i analizi slika, logični sljedeći korak unutar područja računalnog vida bio je osmišljavanje algoritama kojima bi se omogućila reprodukcija vizualnih sadržaja. 
+Razvojem tehnika namijenjenih identifikaciji i analizi slika te rapidnim razvojem neuronskih mreža, logični sljedeći korak unutar područja računalnog vida bio je osmišljavanje algoritama kojima bi se te tehnologije proširile na reprodukciju naučenih vizualnih sadržaja. 
+Prijenos stilova, rekonstrukcija fotografije, generiranje tekstura ili simulacija interakcije molekula neke su od primjena dotičnog problema.
 \newline
 
-Generiranje slika na temelju skice, prijenos stilova i rekonstrukcija fotografije neke su od primjena dotičnog problema. Najznačajniji pomak u tome području ostvarili su Goodfellow et al. 2014. g. \cite{goodfellow2014generative} osmišljavanjem generativhin suparničkih modela čiji tipičan cilj je učenje funkcije preslikavanja iz prostora latentnih varijabli na željenu distribuciju.
+Najznačajniji pomak u tome području ostvarili su Goodfellow et al. 2014. g. \cite{goodfellow2014generative} osmišljavanjem generativnih suparničkih modela. Tipičan cilj mreža baziranih na tom modelu je pronalazak funkcije preslikavanja iz prostora latentnih varijabli na željenu distribuciju, a kojom se teško rješivi matematički problemi svode na jednostavno zadavanje željenih ulaza rezultantne funkcije.
+\newline
 
 Dobivena distribucija, osim za generiranje novih primjera, primjenjiva je i na rješavanje prvotno navedenih problema identifikacije značajki na postojećim slikama. Ta fleksibilnost čini ovaj algoritam izuzetno popularnim za istraživanje što je rezultiralo njegovim mnogobrojnim modifikacijama i poboljšanjima.
 \newline
 
-Ovim radom istražiti će se različita proširenja kojima se ti modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene.
+Ovim radom istražit će se različita proširenja kojima se ti modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene.
 
 \chapter{Duboke mreže}
-Duboke neuronske mreže zadnjih godina izuzetno su popularne u rješavanju klasifikacijskih problema i pronalaženju uzoraka. Tome je zaslužna prednost koju imaju naspram klasičnih pristupa, a koja se očituje u vidu mogućnosti da samostalno pronalaze bitne značajke u podatcima te na temelju njih i tražena rješenja.
+Posljednjih nekoliko godina, duboko učenje u potpunosti je zamijenilo klasične pristupe riješavanja problema na području umjetne inteligencjie. Tu popularnost ostvarilo je zahvaljujući prednosti koju ima naspram klasičnih pristupa, a koja je ponajviše očita u radu s velikim količinama podataka. 
 
-Slojevit pristupu rastavljanja podataka na jednostavnije građevne jedinice čini ih posebice prigodnima za radu sa problemima hijerarhijske prirode poput slika. 
+Dok je starije algoritme strojnog učenja potrebno modificirati ručnom identifikacijom značajki kako bi se primjenili na nove skupove podataka, dubokim mrežama dovoljno je predstaviti te podatke, a one na njih samostalno odluče koje su značajke bitne. Uz trendove računarstva koji idu prema ubrzanom gomilanju svih dostupnih informacija, njihova prednost će samo rasti.
+
+Slojevit pristupu rastavljanja podataka na jednostavnije građevne jedinice čini ih posebice prigodnima za rad s problemima hijerarhijske prirode poput slika. 
 \newline
 
 \section{Konvolucija}
-Konvolucijske mreže osmišljene su s ciljem dohvata lokalnih relacija među podatcima koje se posebice očituju pri radu sa slikama. Naime, ukoliko želimo analizirati malenu značajku na slici, nepoželjno je da njena pozadina ili lokacija unutar slike utječe na nju samu. 
+Pri radu sa slikama, konvolucijske mreže su jedna od najznačajnijih podvrsta dubokih mreža. Osmišljene s ciljem dohvata lokalnih relacija među podatcima, riješavaju problem nepoželjnog utjecaja pozadine i lokacije značajke unutar slike. 
 
-Ideja konvolucije je da se kao ulaz u neurone sljedećeg sloja dovede više vrijednosti s prethodnog što je prikazano slikom \ref{fig:convolution}. To se odvija tako da se unaprijed definiran kvadrat pomiče (konvoluira) po ulaznim podatcima i tako određuje mapiranje na sljedeći sloj. Rezultat tog procesa je da pridodajemo veću važnost pikselima u neposrednoj okolini istraživanog područja.
+Ideja konvolucije je da se kao ulaz u neurone sljedećeg sloja dovedu isključivo okolne vrijednosti neurona s prethodnog [Slika \ref{fig:convolution}]. To se odvija tako da se unaprijed definirano kvadratno područje(filter) pomiče (konvoluira) po ulaznim podatcima pri čemu množimo vrijednosti filtera s pripadnim ulaznim vrijednostima. Upravo taj filter je zadužen za identifikaciju određene značajke.
 \newline
 
 \begin{figure}[H]
@@ -53,7 +57,7 @@ Ideja konvolucije je da se kao ulaz u neurone sljedećeg sloja dovede više vrij
 \end{figure}
 
 \section{Primjer konvolucijske mreže}
-Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj je svaki sloj zadužen za jednostavniji potproblem sljedećeg sloja. Na slici \ref{fig:dnn} prikazana je duboka neuronska mreža s 5 konvolucijskih slojeva među kojima se odvija sažimanje maksimalnom vrijednošću te dva sloja potpune povezanosti.
+Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj se odgovornost filtera raspoređuje tako da je svaki sloj zadužen za jednostavniji potproblem sljedećeg sloja. Prvi slojevi uče atome poput linija, boje ili orijentacije čijim kombiniranjem je moguće raspoznati sve složenije geometrijske oblike. Na slici \ref{fig:dnn} prikazana je duboka neuronska mreža s 5 konvolucijskih slojeva među kojima se odvija sažimanje maksimalnom vrijednošću te dva sloja potpune povezanosti.
 \newline
 
 \begin{figure}[H]
@@ -65,8 +69,8 @@ Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj je svaki sloj zadu�
 
 \chapter{Generativni suparnički modeli (GAN-ovi)}
 \section{Generativni naspram diskriminativnih algoritama}
-Dvije temeljne skupine koijima dijelimo algoritme za učenje su diskriminativni i generativni.
-Nazivi tih algoritama dolaze izravno iz vrste problema koji riješavaju: 
+Dvije temeljne skupine kojima dijelimo algoritme za učenje su diskriminativni i generativni.
+Nazivi tih algoritama dolaze izravno iz vrste problema koji rješavaju: 
 \newline
 
 % setting item mark to bullet
@@ -75,7 +79,7 @@ Nazivi tih algoritama dolaze izravno iz vrste problema koji riješavaju:
 \item Diskriminativni modeli baziraju se na modeliranju isključivo pomoću ulaznih varijabli koje direktno mapiraju na ciljne vrijednosti i time uče uvjetnu vjerojatnost $p(Y|X)$. Ne stvaraju puno pretpostavki o podložnoj distribuciji, no vrlo su ovisni o kvalitetnim podatcima. 
 %Dobiveni model svrstava podatke u ciljne klase s određenom vjerojatnošću.
 
-\item Generativni modeli riješavaju problem kako dobiti $X$ uz dani $Y$, tj. pokušavaju naučiti distribuciju pojedinih klasa $p(X\mid Y)$.
+\item Generativni modeli rješavaju problem kako dobiti $X$ uz dani $Y$, tj. pokušavaju naučiti distribuciju pojedinih klasa $p(X\mid Y)$.
 \newline
 \end{itemize}
 
@@ -83,13 +87,13 @@ Drugim riječima, dok diskriminativni modeli pokušavaju pronaći granicu izmeđ
 \newline
 
 \section{Suparnički modeli}
-U praksi se pokazalo kako diskriminativni modeli postižu bolje rezultate od generativnih. Iako je očito da su generativni algoritmi svestranije naravi od diskriminativnih, to dolazi sa neizbježnim povećanjem složenosti koja proizlazi iz toga što se pronalazak ciljne distribucije u dubokim hijerarhijskim podatcima sastoji od aproksimiranja problema čija riješenja matematički nije moguće izvesti \cite{goodfellow2014generative}. Bez toga, nije moguće ni podesiti model da radi pri svom optimumu. Odgovor na predstavljenu složenost pronađen je u suparničkim modelima čiji rad se bazira na istovremenom učenju dvije podmreže. Ovisno o implementaciji, mreža takve arhitekture u stanju je kopirati distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
+U praksi se pokazalo kako diskriminativni modeli postižu bolje rezultate od generativnih. Iako je očito da su generativni algoritmi svestranije naravi od diskriminativnih, to dolazi s neizbježnim povećanjem složenosti koja proizlazi iz toga što se pronalazak ciljne distribucije u dubokim hijerarhijskim podatcima sastoji od aproksimiranja problema čija rješenja matematički nije moguće izvesti \cite{goodfellow2014generative}. Bez toga, nije moguće ni podesiti model da radi pri svom optimumu. Odgovor na predstavljenu složenost pronađen je u suparničkim modelima čiji rad se bazira na istovremenom učenju dvije podmreže. Ovisno o implementaciji, mreža takve arhitekture u stanju je kopirati distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
 \newline
 
 \section{Rad GAN-a}
 Ideja generativnih suparničkih modela je da se istovremeno uče dvije mreže.
 Pola mreže (generator $G$) bavi se stvaranjem novih podataka iz neke jednostavne distribucije $Z$ s ciljem da stvoreni podatci budu čim sličniji stvarnima. Paralelno s njegovim radom, druga polovica (diskriminator $D$) pokušava evaluirati koliko su uzorci $G(Z)$ slični stvarnim podatcima $Y$. Drugim riječima, dok $G$ pokušava minimizirati izlaz $D-a$, $D$ ga pokušava maksimizirati.
-Cijeli proces usporedljiv je s poslovima detektiav i kriminalca. Jedna strana u bavi se falsifikacijom dokaza, a druga analizom njihove autentičnosti.
+Cijeli proces usporedljiv je s poslovima detektiva i kriminalca. Jedna strana u bavi se falsifikacijom dokaza, a druga analizom njihove autentičnosti.
 \newline
 
 Koraci rada GANa:
@@ -103,13 +107,15 @@ Koraci rada GANa:
 
 
 \chapter{Uvjetne generativne mreže}
+Izumom generativnih suparničkih mreža kao arhitekturom namijenjenom učenju generativnih modela, jedno od najranijih proširenja vezano je uz kontrolu generiranja podataka. 
+
 \section{Generalizacija problema prevođenja slike}
 Isola et al. \cite{isola2017image} predložili su uvjetne generativne mreže kao generalno rješenje problema prevođenja slike. Svojstvene su po učenju ne samo funkcije prijenosa između slika već i funkcije gubitka nad kojom se ona trenira.
-Dok se u drugim modelima ona ručno zadaje, pristup u kojem se ona uči omogučuje generalizaciju nad setovima problema koji bi u suprotnom zahtijevali vrlo drugačije formulacije gubitka.
+Dok se u drugim modelima ona ručno zadaje, pristup u kojem se ona uči omogućuje generalizaciju nad setovima problema koji bi u suprotnom zahtijevali vrlo drugačije formulacije gubitka.
 \newline
 
 \section{Pristup prevođenju slike}
-Analogno prevođenju teksta u drugi jezik zadržavajući određeni kontekst, prevođenje slike odnosi se na translaciju scene u drugačiju reprezentaciju. To se odnosi na mnogobrojne probleme za koje postoje zasebne metode riješavanja poput izmjene pozadine, lica ili promjene boje. No, u srži svih njih može se prepoznati jedinstven problem: naći funkciju preslikavanja piksela u piksel. Tokom učenja, lošim definiranjem te funkcije, nikad nećemo dobiti realistične rezultate. GANovi pristupaju tome tako da odbacuju sva riješenja koja se mogu razlikovati od stvarnosti generirajući slike $y$ iz nasumičnog šuma $z$ : $G: z \rightarrow y$. Poboljšanje nad tom metodom dobivamo uz uvjetovanje ulaznih podataka, tj. uz dodavanja uvjeta na šum da mora sličiti stvarnoj distribuciji. To se postiže dodavanjem slike $x$ slične željenoj na ulaz sustava $G: {x,z} \rightarrow y$ \cite{isola2017image}.
+Analogno prevođenju teksta u drugi jezik zadržavajući određeni kontekst, prevođenje slike odnosi se na translaciju scene u drugačiju reprezentaciju. To se odnosi na mnogobrojne probleme za koje postoje zasebne metode rješavanja poput izmjene pozadine, lica ili promjene boje. No, u srži svih njih može se prepoznati jedinstven problem: naći funkciju preslikavanja piksela u piksel. Tijekom učenja, lošim definiranjem te funkcije, nikad nećemo dobiti realistične rezultate. GANovi pristupaju tome tako da odbacuju sva rješenja koja se mogu razlikovati od stvarnosti generirajući slike $y$ iz nasumičnog šuma $z$ : $G: z \rightarrow y$. Poboljšanje nad tom metodom dobivamo uz uvjetovanje ulaznih podataka, tj. uz dodavanja uvjeta na šum da mora sličiti stvarnoj distribuciji. To se postiže dodavanjem slike $x$ slične željenoj na ulaz sustava $G: {x,z} \rightarrow y$ \cite{isola2017image}.
 
 \section{Primjena}
 Neke od mogućnosti uvjetnih GAN-ova su sinteza fotorealističnih slika iz skica, generiranje objekata na temelju njihovih obruba te bojanje crno bijelih fotografija.
@@ -127,7 +133,7 @@ Većina postojećih algoritama korištenih u računalnom vidu ovisi o postojanju
 Temelj njihovog rada je uz da uz učenje funkcije $G: X \rightarrow Y$, istovremeno uče njen inverz $F: X \rightarrow Y$ pomoću gubitka cikličke dosljednosti: $F(G(X)) \approx X$ i obrnuto.
 
 \section{Multimodalna translacija (MUNIT)}
-Poveća mana spomenutih načina translacije je manjak raznolikosti u translatiranim izlazima. One ne uzimaju u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna \cite{huang2018multimodal} što kao poslijedicu ima da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju sa nasumičnim stilskim kodom uzorkovanim s ciljne domene.
+Poveća mana spomenutih načina translacije je manjak raznolikosti u translatiranim izlazima. One ne uzimaju u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna \cite{huang2018multimodal} što kao posljedicu ima da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju s nasumičnim stilskim kodom uzorkovanim s ciljne domene.
 \newline
 
 Pri podjeli reprezentacija sadržaja i stila, sadržaj se odnosi na prostornu strukturu dok je stil ograničen na rendering te strukture.
@@ -138,19 +144,19 @@ Pri podjeli reprezentacija sadržaja i stila, sadržaj se odnosi na prostornu st
 Cilj prijenosa stila je modificiranje stilističke perspektive slike uz očuvanje sadržaja. Generalna podjela metoda ovog procesa dijeli ih na prijenos na temelju primjera te na prijenos zajedničkog stila neke kolekcije. Dok se klasični pristupi baziraju na prvoj skupini, neuronske mreže bolje rezultate postižu na drugoj.
 
 \section{Očuvanje strukture}
-Postojeće metode ograničene su izborom stilova koje mogu prenijeti te u realističnosti dobivenih rezultata. Pokušaji prijenosa stila koji mijenjaju vrijednost piksela unose sitne izmjene u linijama i teksturama što na rezultantnom sadržaju stvara dojam crteža, a gubi se realističnost fotografije. Uvjet koji se zbog toga postavlja na rad mreže je da mogže unositi izmjene isključivo na prostoru boja.
+Postojeće metode ograničene su izborom stilova koje mogu prenijeti te u realističnosti dobivenih rezultata. Pokušaji prijenosa stila koji mijenjaju vrijednost piksela unose sitne izmjene u linijama i teksturama što na rezultantnom sadržaju stvara dojam crteža, a gubi se realističnost fotografije. Uvjet koji se zbog toga postavlja na rad mreže je da može unositi izmjene isključivo na prostoru boja.
 
 \section{Lokalizacija stila i očuvanje konteksta} \cite{luan2017deep}
-Postoji još jedan faktor koji povećava kompleksnost cijelog procesa, a to je da se ciljano ponašanje prijenosa stila drži konteksta izmjene. Na primjer, ukoliko se na fotografiji nalaze livada i oblaci, modifikacije na livadi moraju biti povezane sa stilom livade na referentnoj slici, a ne da povuku stil sa oblaka. 
+Postoji još jedan faktor koji povećava kompleksnost cijelog procesa, a to je da se ciljano ponašanje prijenosa stila drži konteksta izmjene. Na primjer, ako se na fotografiji nalaze livada i oblaci, modifikacije na livadi moraju biti povezane sa stilom livade na referentnoj slici, a ne da povuku stil s oblaka. 
 
 
 
 \chapter{Zaključak}
-Generativni modeli tema su mnogobrojnih istraživanja i vrlo obečavajuća metoda učenja 'prirodnih' značajki podataka. Uz napretke koji se redovno postižu u njihovom unaprijeđenju, velika je vjerojatnost da će ubrzo biti u stanju generirati uzorke nerazlučive od stvarnosti. Time primjenu pronalaze u područjima poput stvaranja virtualnih svijetova bez ljudske intervencije, izvršavanja modifikacija nad slikama pomoću jednostavnog govora, regeneriranju oštećenih podataka ili stvaranju novih za buduća istraživanja.
+Generativni modeli tema su mnogobrojnih istraživanja i vrlo obećavajuća metoda učenja 'prirodnih' značajki podataka. Uz napretke koji se redovno postižu u njihovom unaprjeđenju, velika je vjerojatnost da će ubrzo biti u stanju generirati uzorke nerazlučive od stvarnosti. Time primjenu pronalaze u područjima poput stvaranja virtualnih svjetova bez ljudske intervencije, izvršavanja modifikacija nad slikama pomoću jednostavnog govora, regeneriranju oštećenih podataka ili stvaranju novih za buduća istraživanja.
 \newline
 
 ...
-Uvjetnim suparničkim mrežama pokazano je da osim što više nije potrebno ručno izvoditi funkcije preslikavanja, zadovoljavajuće rezultate možemo dobiti i ako dubokoj mreži prepustimo da sama nauči funkciju gubitka. To je velik korak prema široj adaptaciji ove tehnologije upravo zato što uklanja potrebu za inžinjerom i omogućava ljudima poput umjetnika i mladih znanstvenika da ju koriste samostalno.
+Uvjetnim suparničkim mrežama pokazano je da osim što više nije potrebno ručno izvoditi funkcije preslikavanja, zadovoljavajuće rezultate možemo dobiti i ako dubokoj mreži prepustimo da sama nauči funkciju gubitka. To je velik korak prema široj adaptaciji ove tehnologije upravo zato što uklanja potrebu za inženjerom i omogućava ljudima poput umjetnika i mladih znanstvenika da ju koriste samostalno.
 ...
 \newline
 
