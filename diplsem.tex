@@ -119,7 +119,9 @@ Koraci rada GANa:
 \end{figure}
 
 \section{GAN-ovi naspram autoenkodera}
+Uz GAN-ove, podjednako važna skupina generativnih modela su autoenkoderi. Ideja iza njihovog rada je da se sastoje od enkodera koji kompresira podatke u latentne varijable te dekodera koji iz tih varijabli ponovo generira ulaznu sliku. Naučenoj mreži možemo mijenjanjem latentnih variabli vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke (što se može popravit uz izmjene koje ću obraditi u sljedećim poglavljima).
 
+Negativna strana varijabilnih autoenkodera je što uzorci koje proizvode imaju dosta anomalija što na slikama rezultira time da više nalikuju na umjetničke slike nego realnu reprezentaciju. Zbog toga primarnu primjenu nalaze u industrijama poput video igara i kompresiji podataka. U istraživanju su i mreže koje ujedinjuju te dvije tehnologije trenirajući dekoder pomoću GAN-a [larsen2015autoencoding].
 
 \chapter{Uvjetne generativne mreže}
 Izumom generativnih suparničkih mreža kao arhitekturom namijenjenom učenju generativnih modela, jedno od najranijih proširenja vezano je uz kontrolu generiranja podataka. 
