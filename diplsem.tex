@@ -21,6 +21,10 @@
 \tableofcontents
 
 
+%%
+% 	INTRO
+%%
+
 
 \chapter{Uvod}
 Razvojem tehnika namijenjenih identifikaciji i analizi slika te rapidnim razvojem neuronskih mreža, logični sljedeći korak unutar područja računalnog vida bio je osmišljavanje algoritama kojima bi se te tehnologije proširile na reprodukciju naučenih vizualnih sadržaja. 
@@ -34,6 +38,12 @@ Dobivena distribucija, osim za generiranje novih primjera, primjenjiva je i na r
 \newline
 
 Ovim radom istražit će se različita proširenja kojima se ti modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene.
+
+
+%%
+% 	DEEP NETWORKS
+%%
+
 
 \chapter{Duboke mreže}
 Posljednjih nekoliko godina, duboko učenje u potpunosti je zamijenilo klasične pristupe rješavanja problema na području umjetne inteligencije. Tu popularnost ostvarilo je zahvaljujući prednosti koju ima naspram klasičnih pristupa, a koja je ponajviše očita u radu s velikim količinama podataka. 
@@ -67,7 +77,13 @@ Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj se odgovornost filt
     \label{fig:dnn}
 \end{figure}
 
-\chapter{Generativni suparnički modeli (GAN-ovi)}
+
+%%
+% 	GENERATIVE MODELLING
+%%
+
+
+\chapter{Generativno modeliranje}
 \section{Generativni naspram diskriminativnih algoritama}
 Algoritme za učenje dijelimo na dvije temeljne skupine -- diskriminativne i generativne:
 \newline
@@ -95,7 +111,7 @@ Alternativni pristup ponuđen je u obliku suparničkih modela -- probleme kojima
 
 
 \section{Rad generativnih suparničkih modela}
-Ideja generativnih suparničkih modela bazirana je na učenje mreža kroz minimax igru -- umjesto izravnog rješavanja optimizacijskog problema, GAN sadrži funkciju kojoj mreže paralelno podešavaju ulaze dok ne dođu do stabilne točke u odnosu na maksimum jedne, a minumum strategije druge mreže.
+Ideja generativnih suparničkih modela bazirana je na učenje mreža kroz minimax igru -- umjesto izravnog rješavanja optimizacijskog problema, GAN sadrži funkciju kojoj mreže paralelno podešavaju ulaze dok ne dođu do stabilne točke u odnosu na maksimum jedne, a minumum strategije druge mreže. 
 \newline
 
 Pola mreže (generator $G$) bavi se stvaranjem novih podataka iz neke jednostavne distribucije $Z$ s ciljem da stvoreni podatci budu čim sličniji stvarnima. 
@@ -104,7 +120,7 @@ Paralelno s njegovim radom, druga polovica (diskriminator $D$) pokušava evaluir
 \newline
 \newpage
 
-Koraci rada GANa:
+Koraci rada GAN-a:
 \begin{enumerate} 
 \item Generator $G$ iz nasumičnih brojeva (šum) $Z$ stvara sliku $G(Z)$
 \item Ta slika se zajedno sa uzorcima skupa stvarnih podataka $Y$ dovodi na ulaz diskriminatora $D$
@@ -123,8 +139,29 @@ Uz GAN-ove, podjednako važna skupina generativnih modela su autoenkoderi. Ideja
 
 Negativna strana varijabilnih autoenkodera je što uzorci koje proizvode imaju dosta anomalija što na slikama rezultira time da više nalikuju na umjetničke slike nego realnu reprezentaciju. Zbog toga primarnu primjenu nalaze u industrijama poput video igara i kompresiji podataka. U istraživanju su i mreže koje ujedinjuju te dvije tehnologije trenirajući dekoder pomoću GAN-a [larsen2015autoencoding].
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{vae-gan}
+    \caption{Kombinacija autoenkodera i GAN-a}
+    \label{fig:vae-gan}
+\end{figure}
+
+
+%%
+% 	CONDITIONAL GANS
+%%
+
+
 \chapter{Uvjetne generativne mreže}
-Izumom generativnih suparničkih mreža kao arhitekturom namijenjenom učenju generativnih modela, jedno od najranijih proširenja vezano je uz kontrolu generiranja podataka. 
+Kao što je spomenuto u prošlom poglavlju, jedna od većih mana generativnih suparničkih mreža je da generiraju poprilično nasumične uzorke. Pošto većina problema u praksi zahtijeva kontrolu nad tim procesom, jedno od najranijih proširenja GAN-ova vezano je upravo uz kontrolu generiranja podataka. Postavljanjem uvjeta na ulazu generativnog modela, moguće je usmjeriti generativni proces. Vrste uvjeta mogu biti raznolike: oznake klasa, skice, dubinske mape pa čak i cijele slike.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{isola2017-conditioned-generation}
+    \caption{Primjeri uvjetovane generacije}
+    \label{fig:isola2017-conditioned-generation}
+\end{figure}
+
 
 \section{Generalizacija problema prevođenja slike}
 Isola et al. \cite{isola2017image} predložili su uvjetne generativne mreže kao generalno rješenje problema prevođenja slike. Svojstvene su po učenju ne samo funkcije prijenosa između slika već i funkcije gubitka nad kojom se ona trenira.
@@ -137,6 +174,10 @@ Analogno prevođenju teksta u drugi jezik zadržavajući određeni kontekst, pre
 \section{Primjena}
 Neke od mogućnosti uvjetnih GAN-ova su sinteza fotorealističnih slika iz skica, generiranje objekata na temelju njihovih obruba te bojanje crno bijelih fotografija.
 
+
+%%
+% 	UNPAIRED IMAGE TRANSLATION
+%%
 
 
 \chapter{Translacija bez uparenih primjera za učenje}
@@ -166,6 +207,10 @@ Postojeće metode ograničene su izborom stilova koje mogu prenijeti te u realis
 \section{Lokalizacija stila i očuvanje konteksta} \cite{luan2017deep}
 Postoji još jedan faktor koji povećava kompleksnost cijelog procesa, a to je da se ciljano ponašanje prijenosa stila drži konteksta izmjene. Na primjer, ako se na fotografiji nalaze livada i oblaci, modifikacije na livadi moraju biti povezane sa stilom livade na referentnoj slici, a ne da povuku stil s oblaka. 
 
+
+%%
+% 	CONCLUSION
+%%
 
 
 \chapter{Zaključak}
