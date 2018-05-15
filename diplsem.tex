@@ -2,8 +2,10 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{ amssymb }
 
 \graphicspath{ {images/} }
+\newcommand{\Lagr}{\mathcal{L}}
 
 \begin{document}
 \nocite{*}
@@ -153,7 +155,9 @@ Negativna strana varijabilnih autoenkodera je što uzorci koje proizvode imaju d
 
 
 \chapter{Uvjetne generativne mreže}
-Kao što je spomenuto u prošlom poglavlju, jedna od većih mana generativnih suparničkih mreža je da generiraju poprilično nasumične uzorke. Pošto većina problema u praksi zahtijeva kontrolu nad tim procesom, jedno od najranijih proširenja GAN-ova vezano je upravo uz kontrolu generiranja podataka. Postavljanjem uvjeta na ulazu generativnog modela, moguće je usmjeriti generativni proces. Vrste uvjeta mogu biti raznolike: oznake klasa, skice, dubinske mape pa čak i cijele slike.
+Kao što je spomenuto u prošlom poglavlju, jedna od većih mana generativnih suparničkih mreža je što generiraju poprilično nasumične uzorke. Pošto većina problema u praksi zahtijeva kontrolu nad tim procesom, jedno od najranijih proširenja GAN-ova vezano je upravo uz kontrolu generiranja podataka. 
+
+Postavljanjem uvjeta na ulaz generativnog modela, moguće je usmjeriti generativni proces. Vrste uvjeta mogu biti raznolike: oznake klasa, skice, dubinske mape pa čak i cijele slike.
 
 \begin{figure}[H]
     \centering
@@ -164,15 +168,29 @@ Kao što je spomenuto u prošlom poglavlju, jedna od većih mana generativnih su
 
 
 \section{Generalizacija problema prevođenja slike}
-Isola et al. \cite{isola2017image} predložili su uvjetne generativne mreže kao generalno rješenje problema prevođenja slike. Svojstvene su po učenju ne samo funkcije prijenosa između slika već i funkcije gubitka nad kojom se ona trenira.
-Dok se u drugim modelima ona ručno zadaje, pristup u kojem se ona uči omogućuje generalizaciju nad setovima problema koji bi u suprotnom zahtijevali vrlo drugačije formulacije gubitka.
+Jedan način razmatranja slika je kao višeslojni podatak u kojem se osnovni sadržaj obogaćuje raznolikim stilovima i načinima reprezentacije. 
+Jednako kao što riječ možemo prevesti na više jezika zadržavajući određeni kontekst, ista scena može se prikazati kao dubinska mapa, RGB slika ili semantička segmentacija. Sukladno toj ideji, mnoge probleme procesiranja slika moguće je svesti na translaciju slike u drugačiju reprezentaciju. Neovisno radi li se o uklanjanju anomalija, ispravku boja ili izmjeni pozadine, u srži tih procesa može se prepoznati jedinstven problem: pronaći funkciju preslikavanja piksela u piksel. Vođeni time, Isola et al. osmislili su uvjetne generativne mreže kao generalno rješenje problema prevođenja slike \cite{isola2017image}.
 \newline
 
-\section{Pristup prevođenju slike}
-Analogno prevođenju teksta u drugi jezik zadržavajući određeni kontekst, prevođenje slike odnosi se na translaciju scene u drugačiju reprezentaciju. To se odnosi na mnogobrojne probleme za koje postoje zasebne metode rješavanja poput izmjene pozadine, lica ili promjene boje. No, u srži svih njih može se prepoznati jedinstven problem: naći funkciju preslikavanja piksela u piksel. Tijekom učenja, lošim definiranjem te funkcije, nikad nećemo dobiti realistične rezultate. GANovi pristupaju tome tako da odbacuju sva rješenja koja se mogu razlikovati od stvarnosti generirajući slike $y$ iz nasumičnog šuma $z$ : $G: z \rightarrow y$. Poboljšanje nad tom metodom dobivamo uz uvjetovanje ulaznih podataka, tj. uz dodavanja uvjeta na šum da mora sličiti stvarnoj distribuciji. To se postiže dodavanjem slike $x$ slične željenoj na ulaz sustava $G: {x,z} \rightarrow y$ \cite{isola2017image}.
+\section{Pristup uvjetovanog prevođenja slike}
+Zadavanje cilja neuronskim mrežama, a time i uspjeh njihovog učenja u potpunosti je bazirano na formulaciji funkcije gubitka. Lošim definiranjem te funkcije, neovisno o količini raspoloživih resursa i tipu mreže, nikad nećemo dobiti realistične rezultate. U GAN-ovima je ona zadana dosta općenito -- jesu li generirani podatci različiti od stvarnih uzoraka. Takva definicija omogućuje joj da se prilagodi podatcima te kao takva omogućuje generalizaciju nad setovima problema koji bi u suprotnom zahtijevali vrlo drugačije formulacije gubitka. 
 
-\section{Primjena}
-Neke od mogućnosti uvjetnih GAN-ova su sinteza fotorealističnih slika iz skica, generiranje objekata na temelju njihovih obruba te bojanje crno bijelih fotografija.
+Dok standardni GAN-ovi odbacuju sva rješenja koja se mogu razlikovati od stvarnosti generirajući slike $y$ iz nasumičnog šuma $z$ : $G: z \rightarrow y$, uvjetovani GAN-ovi dodatno usmjeravaju dobra rješenja prema željenoj distribuciji značajki dodavanjem uvjeta $x$ na šum $z$: $G: {x,z} \rightarrow y$ \cite{isola2017image}.
+
+\section{Funkcija gubitka}
+Kako su GAN-ovi sastavljeni od dvije mreže, za njihovo učenje potrebne su zasebne definicije funkcije gubitka. U slučaju neuvjetovanog GAN-a, $G$ ima cilj minimizacije $log(1 - D(G(z)))$ s obzirom na $D$ koji pokušava minimizirati $log(D(x))$.
+Zajednička funkcija gubitka 
+
+$ \Lagr_{cGAN}(G, D) = \sum_{y}[log D(y)] + \sum_{x,z}[log(1 - D(G(x,z)))]$
+\newline
+koristi se za učenje kroz cilj mini-max igre:
+
+$ G* = arg min_G max_D \Lagr_{GAN}(G, D)$.
+\newline
+
+Uvjetovanjem dodatnim informacijama $y$ na obje mreže taj cilj mijenja se u : 
+
+$ \Lagr_{cGAN}(G, D) = \sum_{x,y}[log D(x,y)] + \sum_{x,z}[log(1 - D(x, G(x,z)))]$
 
 
 %%
