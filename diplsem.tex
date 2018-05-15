@@ -2,7 +2,8 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{ amssymb }
+\usepackage{amssymb}
+\usepackage{amsmath}
 
 \graphicspath{ {images/} }
 \newcommand{\Lagr}{\mathcal{L}}
@@ -113,7 +114,7 @@ Alternativni pristup ponuđen je u obliku suparničkih modela -- probleme kojima
 
 
 \section{Rad generativnih suparničkih modela}
-Ideja generativnih suparničkih modela bazirana je na učenje mreža kroz minimax igru -- umjesto izravnog rješavanja optimizacijskog problema, GAN sadrži funkciju kojoj mreže paralelno podešavaju ulaze dok ne dođu do stabilne točke u odnosu na maksimum jedne, a minumum strategije druge mreže. 
+Ideja generativnih suparničkih modela bazirana je na učenje mreža kroz minimax igru -- umjesto izravnog rješavanja optimizacijskog problema, GAN sadrži funkciju kojoj mreže paralelno podešavaju ulaze dok ne dođu do stabilne točke u odnosu na maksimum jedne, a minimum strategije druge mreže. 
 \newline
 
 Pola mreže (generator $G$) bavi se stvaranjem novih podataka iz neke jednostavne distribucije $Z$ s ciljem da stvoreni podatci budu čim sličniji stvarnima. 
@@ -137,7 +138,7 @@ Koraci rada GAN-a:
 \end{figure}
 
 \section{GAN-ovi naspram autoenkodera}
-Uz GAN-ove, podjednako važna skupina generativnih modela su autoenkoderi. Ideja iza njihovog rada je da se sastoje od enkodera koji kompresira podatke u latentne varijable te dekodera koji iz tih varijabli ponovo generira ulaznu sliku. Naučenoj mreži možemo mijenjanjem latentnih variabli vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke (što se može popravit uz izmjene koje ću obraditi u sljedećim poglavljima).
+Uz GAN-ove, podjednako važna skupina generativnih modela su autoenkoderi. Ideja iza njihovog rada je da se sastoje od enkodera koji kompresira podatke u latentne varijable te dekodera koji iz tih varijabli ponovo generira ulaznu sliku. Naučenoj mreži možemo mijenjanjem latentnih varijabli vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke (što se može popraviti uz izmjene koje ću obraditi u sljedećim poglavljima).
 
 Negativna strana varijabilnih autoenkodera je što uzorci koje proizvode imaju dosta anomalija što na slikama rezultira time da više nalikuju na umjetničke slike nego realnu reprezentaciju. Zbog toga primarnu primjenu nalaze u industrijama poput video igara i kompresiji podataka. U istraživanju su i mreže koje ujedinjuju te dvije tehnologije trenirajući dekoder pomoću GAN-a [larsen2015autoencoding].
 
@@ -181,7 +182,7 @@ Dok standardni GAN-ovi odbacuju sva rješenja koja se mogu razlikovati od stvarn
 Kako su GAN-ovi sastavljeni od dvije mreže, za njihovo učenje potrebne su zasebne definicije funkcije gubitka. U slučaju neuvjetovanog GAN-a, $G$ ima cilj minimizacije $log(1 - D(G(z)))$ s obzirom na $D$ koji pokušava minimizirati $log(D(x))$.
 Zajednička funkcija gubitka 
 
-$ \Lagr_{cGAN}(G, D) = \sum_{y}[log D(y)] + \sum_{x,z}[log(1 - D(G(x,z)))]$
+$ \Lagr_{GAN}(G, D) = \sum_{y}[log D(y)] + \sum_{x,z}[log(1 - D(G(x,z)))]$
 \newline
 koristi se za učenje kroz cilj mini-max igre:
 
@@ -199,15 +200,60 @@ $ \Lagr_{cGAN}(G, D) = \sum_{x,y}[log D(x,y)] + \sum_{x,z}[log(1 - D(x, G(x,z)))
 
 
 \chapter{Translacija bez uparenih primjera za učenje}
-\section{Kružni GAN-ovi}
+Učenje GAN-ova iz prethodnih poglavlja, kao i mnogih drugih algoritama, ovisi o postojanju velikih podatkovnih skupova označenih parova slika. S obzirom na to da izrada tih skupova iziskuje veliku količinu vremena i manualnog ljudskog rada, u mnogim slučajevima nam oni nisu dostupni.
 
-\subsection{Prednosti}
-Većina postojećih algoritama korištenih u računalnom vidu ovisi o postojanju velikih podatkovnih setova označenih parova slika. No, za mnoge probleme takvi podatci nisu dostupni, a u takvim situacijama primjenu nalaze kružni GANovi.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{zhu2017unpaired-paired-vs-unpaired}
+    \caption{Parovi podataka (lijevo) ${\{x_i,y_i\}}_{i=1}^N$ te neupareni setovi (desno). }
+    \label{fig:zhu2017unpaired-paired-vs-unpaired}
+\end{figure}
+
+\section{Kružni GAN-ovi}
+Iako učenje bez označenih primjera izgleda kao poprilično drugačiji problem nego kad su prisutni, osnovni cilj ostaje isti -- naučiti preslikavanje s izvorišne domene $(X)$ na ciljnu $(Y)$: $G: X\rightarrow Y$ takvo da nije moguće razlikovati distribuciju $G(X)$ od distribucije $Y$. 
+
+Kompleksnost proizlazi iz toga što je taj cilj vrlo nespecifičan, a bez primjera koji bi pružali smjernice tijekom učenja rezultati su nekonzistentni i previše raznoliki da bi bili primjenjivi.
+
+Kružni GAN-ovi zato uvode uvjet tranzitivnosti nad ciljnom funkcijom kao način regularizacije u svrhu provođenja dosljednosti ponašanja modela.
+Definirajući inverz funkcije $G$: $F: Y \rightarrow X$, funkciju gubitka osnovnog GAN-a proširuju gubitkom cikličke dosljednosti: $F(G(X)) \approx X$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{zhu2017unpaired-reconstruction}
+    \caption{Primjeri nenadziranog GAN-a s i bez rekonstrukcije}
+    \label{fig:zhu2017unpaired-reconstruction}
+\end{figure}
+
+Oslanjajući se na pretpostavku da izvorišna i ciljna domena nisu u potpunosti nasumične nego sadrže podložnu zajedničku distribuciju, inverzom pretvaraju ovaj problem u nadzirano učenje. Pri tome umjesto značajki iz parova primjera, uče zajedničke specifičnosti cijelih setova te njih koriste za nadziranje.
+
+\subsection{Gubitak cikličke dosljednosti}
+Iako suparničke mreže u teoriji mogu naučiti preslikavanja $G$ i $F$ koja stvaraju uzorke jednake distribucije kao $Y$ i $X$, u praksi često nauče samo preslikavanje na podskup uzoraka ciljne domene. Iz tog razloga, gubitak suparničke mreže 
+
+
+\begin{equation}
+\begin{split}
+\Lagr_{GAN}(G, D) &= \sum_{y\sim p_{data(y)}}[log D(y)] \\
+			     &+ \sum_{x\sim p_{data(x)}}[log(1 - D(G(x)))]
+\end{split}
+\end{equation}
+
+nije dovoljno specifičan da osigura željenu translaciju slike.
 \newline
 
-\subsection{Rad CycleGAN-a}
-Temelj njihovog rada je uz da uz učenje funkcije $G: X \rightarrow Y$, istovremeno uče njen inverz $F: X \rightarrow Y$ pomoću gubitka cikličke dosljednosti: $F(G(X)) \approx X$ i obrnuto.
+Kako bi smanjili prostor mogućih funkcija preslikavanja, cikličkom dosljednošću forsiramo da dvosmjerni ciklus translacije mora izvornu sliku $x \in X$ preko translatirane $y \in Y$ preslikati nazad u izvornu reprezentaciju: $x \rightarrow G(X) \rightarrow F(G(x)) \approx x$. (Isto vrijedi u obrnutom smjeru.)
 
+\begin{equation}
+\begin{split}
+\Lagr_{cyc}(G, F) &= \sum_{x\sim p_{data(x)}}[ \parallel F(G(x)) - x \parallel ] \\
+			   &+ \sum_{y\sim p_{data(y)}}[ \parallel G(F(y)) - y \parallel ]
+\end{split}
+\end{equation}
+
+\subsection{Prednosti}
+
+
+
+\newpage
 \section{Multimodalna translacija (MUNIT)}
 Poveća mana spomenutih načina translacije je manjak raznolikosti u translatiranim izlazima. One ne uzimaju u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna \cite{huang2018multimodal} što kao posljedicu ima da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju s nasumičnim stilskim kodom uzorkovanim s ciljne domene.
 \newline
