@@ -167,7 +167,7 @@ Postavljanjem uvjeta na ulaz generativnog modela, moguće je usmjeriti generativ
     \label{fig:isola2017-conditioned-generation}
 \end{figure}
 
-
+\newpage
 \section{Generalizacija problema prevođenja slike}
 Jedan način razmatranja slika je kao višeslojni podatak u kojem se osnovni sadržaj obogaćuje raznolikim stilovima i načinima reprezentacije. 
 Jednako kao što riječ možemo prevesti na više jezika zadržavajući određeni kontekst, ista scena može se prikazati kao dubinska mapa, RGB slika ili semantička segmentacija. Sukladno toj ideji, mnoge probleme procesiranja slika moguće je svesti na translaciju slike u drugačiju reprezentaciju. Neovisno radi li se o uklanjanju anomalija, ispravku boja ili izmjeni pozadine, u srži tih procesa može se prepoznati jedinstven problem: pronaći funkciju preslikavanja piksela u piksel. Vođeni time, Isola et al. osmislili su uvjetne generativne mreže kao generalno rješenje problema prevođenja slike \cite{isola2017image}.
@@ -178,21 +178,33 @@ Zadavanje cilja neuronskim mrežama, a time i uspjeh njihovog učenja u potpunos
 
 Dok standardni GAN-ovi odbacuju sva rješenja koja se mogu razlikovati od stvarnosti generirajući slike $y$ iz nasumičnog šuma $z$ : $G: z \rightarrow y$, uvjetovani GAN-ovi dodatno usmjeravaju dobra rješenja prema željenoj distribuciji značajki dodavanjem uvjeta $x$ na šum $z$: $G: {x,z} \rightarrow y$ \cite{isola2017image}.
 
+\newpage
 \section{Funkcija gubitka}
-Kako su GAN-ovi sastavljeni od dvije mreže, za njihovo učenje potrebne su zasebne definicije funkcije gubitka. U slučaju neuvjetovanog GAN-a, $G$ ima cilj minimizacije $log(1 - D(G(z)))$ s obzirom na $D$ koji pokušava minimizirati $log(D(x))$.
-Zajednička funkcija gubitka 
+Kako su GAN-ovi sastavljeni od dvije mreže, za njihovo učenje potrebne su zasebne definicije funkcije gubitka. U slučaju neuvjetovanog GAN-a, generator $G$ ima cilj minimizacije $log(1 - D(G(z)))$ s obzirom na diskriminator $D$ koji pokušava minimizirati $log(D(x))$.
+Zajednička funkcija gubitka
 
-$ \Lagr_{GAN}(G, D) = \sum_{y}[log D(y)] + \sum_{x,z}[log(1 - D(G(x,z)))]$
-\newline
+\begin{equation}
+\begin{split}
+\Lagr_{GAN}(G, D) &= \sum_{y}[log D(y)] \\
+			     &+ \sum_{x,z}[log(1 - D(G(x,z)))]
+\end{split}
+\end{equation}
+
+
 koristi se za učenje kroz cilj mini-max igre:
 
-$ G* = arg min_G max_D \Lagr_{GAN}(G, D)$.
-\newline
+\begin{equation}
+G^{*} = arg \: min_G \: max_D \: \Lagr_{GAN}(G, D)
+\end{equation}
 
 Uvjetovanjem dodatnim informacijama $y$ na obje mreže taj cilj mijenja se u : 
 
-$ \Lagr_{cGAN}(G, D) = \sum_{x,y}[log D(x,y)] + \sum_{x,z}[log(1 - D(x, G(x,z)))]$
-
+\begin{equation}
+\begin{split}
+\Lagr_{cGAN}(G, D) &= \sum_{x,y}[log D(x,y)] \\
+			       &+ \sum_{x,z}[log(1 - D(x, G(x,z)))]
+\end{split}
+\end{equation}
 
 %%
 % 	UNPAIRED IMAGE TRANSLATION
@@ -209,6 +221,7 @@ Učenje GAN-ova iz prethodnih poglavlja, kao i mnogih drugih algoritama, ovisi o
     \label{fig:zhu2017unpaired-paired-vs-unpaired}
 \end{figure}
 
+\newpage
 \section{Kružni GAN-ovi}
 Iako učenje bez označenih primjera izgleda kao poprilično drugačiji problem nego kad su prisutni, osnovni cilj ostaje isti -- naučiti preslikavanje s izvorišne domene $(X)$ na ciljnu $(Y)$: $G: X\rightarrow Y$ takvo da nije moguće razlikovati distribuciju $G(X)$ od distribucije $Y$. 
 
@@ -219,7 +232,7 @@ Definirajući inverz funkcije $G$: $F: Y \rightarrow X$, funkciju gubitka osnovn
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{zhu2017unpaired-reconstruction}
+    \includegraphics[width=0.6\textwidth]{zhu2017unpaired-reconstruction}
     \caption{Primjeri nenadziranog GAN-a s i bez rekonstrukcije}
     \label{fig:zhu2017unpaired-reconstruction}
 \end{figure}
@@ -254,9 +267,37 @@ Kako bi smanjili prostor mogućih funkcija preslikavanja, cikličkom dosljednoš
 
 
 \newpage
-\section{Multimodalna translacija (MUNIT)}
-Poveća mana spomenutih načina translacije je manjak raznolikosti u translatiranim izlazima. One ne uzimaju u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna \cite{huang2018multimodal} što kao posljedicu ima da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju s nasumičnim stilskim kodom uzorkovanim s ciljne domene.
+\section{Unimodalna nenadzirana translacija (UNIT)} [liu2017unsupervised]
+Analizirajući translaciju slike s gledišta modeliranja vjerojatnosti, cilj je odrediti združenu distribuciju više različitih domena slika. U slučaju nenadziranog učenja, izvorni i ciljni supovi uzorkovani su iz marginalnih distribucija (tj. u potpunosti neovisno jedan o drugome), a združenih distribucija koje iz njih možemo izvesti ima beskonačno mnogo.
+
+Skup znanstvenika iz NVIDIA-e je tome pristupio preslikavajući i izvornu i ciljnu domenu na zajednički prostor latentnih varijabli čime su uveli pretpostavku da postoje zajedničke varijable o kojima ovise obje distribucije. 
+
+Tehnološki su to ostvarili umrežavanjem GAN-a i variacijskog autoenkodera. GAN stvara latentni prostor dijeljenjem težina generatora i diskriminatora nad kojim varijacijski autoenkoder određuje relacije između domena. 
+Osim toga, pokazali su \cite{liu2017unsupervised} i da dijeljeni latentni prostor implicira cikličku konzistenciju objašnjenu u poglavlju o kružnim GAN-ovima.
 \newline
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{liu2017unsupervised-unit}
+    \caption{ TODO }
+    \label{fig:liu2017unsupervised-unit}
+\end{figure}
+
+
+\newpage
+\section{Multimodalna nenadzirana translacija (MUNIT)}
+Iako prethodne sekcije opisuju načine nenadziranog učenja, pri radu s njima može se primjetiti da nisu generičko rješenje tog problema. Naime, kružni GAN-ovi se baziraju na pretpostavci da je preslikavanje između domena determinističko zbog čega imaju manu da im nedostaje raznolikosti u translatiranim izlazima, a UNIT modeli uče unimodalno preslikavanje. Ne uzimajući u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna \cite{huang2018multimodal}, imaju posljedicu  da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. 
+
+MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju s nasumičnim stilskim kodom uzorkovanim s ciljne domene.
+\newline
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{huang2018multimodal-munit}
+    \caption{ TODO }
+    \label{fig:huang2018multimodal-munit}
+\end{figure}
+
 
 Pri podjeli reprezentacija sadržaja i stila, sadržaj se odnosi na prostornu strukturu dok je stil ograničen na rendering te strukture.
 %A concurrent work also recognizes this limitation and propose an extension of CycleGAN for multimodal mapping \cite{almahairi2018augmented}
