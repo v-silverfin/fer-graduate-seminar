@@ -137,6 +137,7 @@ Koraci rada GAN-a:
     \label{fig:convolution}
 \end{figure}
 
+\newpage
 \section{GAN-ovi naspram autoenkodera}
 Uz GAN-ove, podjednako važna skupina generativnih modela su autoenkoderi. Ideja iza njihovog rada je da se sastoje od enkodera koji kompresira podatke u latentne varijable te dekodera koji iz tih varijabli ponovo generira ulaznu sliku. Naučenoj mreži možemo mijenjanjem latentnih varijabli vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke (što se može popraviti uz izmjene koje ću obraditi u sljedećim poglavljima).
 
@@ -303,14 +304,32 @@ Pri podjeli reprezentacija sadržaja i stila, sadržaj se odnosi na prostornu st
 %A concurrent work also recognizes this limitation and propose an extension of CycleGAN for multimodal mapping \cite{almahairi2018augmented}
 
 
+%%
+% 	STYLE TRANSFER
+%%
+
+
 \chapter{Prijenos stila}
-Cilj prijenosa stila je modificiranje stilističke perspektive slike uz očuvanje sadržaja. Generalna podjela metoda ovog procesa dijeli ih na prijenos na temelju primjera te na prijenos zajedničkog stila neke kolekcije. Dok se klasični pristupi baziraju na prvoj skupini, neuronske mreže bolje rezultate postižu na drugoj.
+Metode prijenosa stila bave se modificiranjem stilističke perspektive slike uz očuvanje sadržaja. Generalno te procese možemo podijeliti na prijenos temeljem jednog primjera te na prijenos zajedničkog stila neke kolekcije. Dok se klasični pristupi baziraju na prvoj skupini, neuronske mreže bolje rezultate postižu na drugoj. 
+
+\section{Konvolucijski pristup}
+Korištenje konvolucijskih mreža (CNN) za prijenos značajki oslanjaja se na činjenicu da se konvolucijski slojevi specijaliziraju za određene značajke. Pošto pamte značajke u obliku aktivacijskih mapa po slojevima, lako je izolirati karakteristike koje želimo prenijeti na novu sliku. 
+
+Za prijenos stila formulira se optimizacijski problem koji, počevši od nasumičnog šuma, radi izmjene kojima istovremeno minimizira odstupanja neuronskih aktivacija od osnovne slike te od značajki koje se prenose. Nažalost, CNN-ovi imaju dvije nepopravljive mane:
+
+\begin{enumerate} 
+\item Ograničeni su izborom stilova koje mogu prenijeti jer je svaka mreža specijalizirana za isključivo jedan.
+\item Pošto su neuronske mreže vrlo samostalne po pitanju kako i koje značajke uče, svaki sloj uz stilističke značajke sadrži i neke strukturne. Zbog toga rezultatna slika sadrži distorzije u strukturnom sadržaju što ju čini nerealističnom.
+\end{enumerate}
 
 \section{Očuvanje strukture}
-Postojeće metode ograničene su izborom stilova koje mogu prenijeti te u realističnosti dobivenih rezultata. Pokušaji prijenosa stila koji mijenjaju vrijednost piksela unose sitne izmjene u linijama i teksturama što na rezultantnom sadržaju stvara dojam crteža, a gubi se realističnost fotografije. Uvjet koji se zbog toga postavlja na rad mreže je da može unositi izmjene isključivo na prostoru boja.
+Sitne izmjene u linijama i teksturama koje CNN-ovi vrše pri prijenosu stila posljedica je toga što izravno mijenjaju vrijednosti piksela. Ako ne želimo izgubiti originalni sadržaj fotografije, dovoljno je postaviti uvjet na rad mreže da izmjene može unositi isključivo na prostoru boja. No to nam još uvijek ne garantira da će fotografija zadržati realističnost.
 
 \section{Lokalizacija stila i očuvanje konteksta} \cite{luan2017deep}
-Postoji još jedan faktor koji povećava kompleksnost cijelog procesa, a to je da se ciljano ponašanje prijenosa stila drži konteksta izmjene. Na primjer, ako se na fotografiji nalaze livada i oblaci, modifikacije na livadi moraju biti povezane sa stilom livade na referentnoj slici, a ne da povuku stil s oblaka. 
+Postoji još jedan faktor koji povećava kompleksnost cijelog procesa: ciljano ponašanje prijenosa stila trebalo bi se držati konteksta izmjene. Na primjer, ako se na fotografiji nalaze livada i oblaci, modifikacije nad livadom moraju biti povezane sa stilom livade na referentnoj slici, a ne da povuku stil s oblaka. 
+Za CNN, postoje radovi koji to uspješno rade usmjeravanjem procesa temeljem semantičke segmentacije \cite{luan2017deep}. Osim što ovise o zasebnim mrežama koje bi segmentirale sadržaj, potrebno je i ručno obraditi set raspoloživih labela.
+
+Kod GAN-ova
 
 
 %%
@@ -319,13 +338,20 @@ Postoji još jedan faktor koji povećava kompleksnost cijelog procesa, a to je d
 
 
 \chapter{Zaključak}
-Generativni modeli tema su mnogobrojnih istraživanja i vrlo obećavajuća metoda učenja 'prirodnih' značajki podataka. Uz napretke koji se redovno postižu u njihovom unaprjeđenju, velika je vjerojatnost da će ubrzo biti u stanju generirati uzorke nerazlučive od stvarnosti. Time primjenu pronalaze u područjima poput stvaranja virtualnih svjetova bez ljudske intervencije, izvršavanja modifikacija nad slikama pomoću jednostavnog govora, regeneriranju oštećenih podataka ili stvaranju novih za buduća istraživanja.
+Generativni modeli tema su mnogobrojnih istraživanja i vrlo obećavajuća metoda učenja 'prirodnih' značajki podataka. Uz napretke koji se redovno postižu u njihovom unaprjeđenju, velika je vjerojatnost da će ubrzo biti u stanju generirati uzorke nerazlučive od stvarnosti. Time primjenu pronalaze u područjima poput stvaranja virtualnih svjetova bez ljudske intervencije, izvršavanja modifikacija nad slikama pomoću govornih naredbi, regeneriranju oštećenih podataka ili stvaranju novih za buduća istraživanja.
 \newline
 
-...
-Uvjetnim suparničkim mrežama pokazano je da osim što više nije potrebno ručno izvoditi funkcije preslikavanja, zadovoljavajuće rezultate možemo dobiti i ako dubokoj mreži prepustimo da sama nauči funkciju gubitka. To je velik korak prema široj adaptaciji ove tehnologije upravo zato što uklanja potrebu za inženjerom i omogućava ljudima poput umjetnika i mladih znanstvenika da ju koriste samostalno.
-...
+Uvjetnim suparničkim mrežama pokazano je da osim što više nije potrebno ručno izvoditi funkcije preslikavanja, zadovoljavajuće rezultate možemo dobiti i ako dubokoj mreži prepustimo da sama nauči funkciju gubitka. To je velik korak prema široj adaptaciji ove tehnologije upravo zato što uklanja potrebu za inženjerskim radom i omogućava ljudima poput umjetnika ili znanstvenika iz ne-programerskih područja da ju koriste samostalno.
 \newline
+
+Kada je pak u pitanju translacija bez dostupnih primjera za učenje, što je vrlo čest slučaj, kružni GAN-ovi ostvaruju rezultate usporedne s nadziranim modelima. Osim toga, dovoljno su svestrani da obavljaju zadatke nekolicine drugih mreža: od reoblikovanja objekata, uklanjanja anomalija do kombiniranja više stilova. Mogu čak obavljati i prijenos karakterističnog stila cijelih kolekcija -- kao što je načina crtanja Leonarda da Vincija. 
+
+Kružni GAN-ovi zakazuju kada su podatci previše raznoliki i nestrukturirani. Zbune se kada su objekti preklopljeni, poput konja i jahača ili stabala ispred zgrada. Predložena riješenja tog problema su dodavanje malog broja označenih primjera te korištenje semantičke segmentacije pri učenju. 
+
+
+\newpage
+MUNIT arhitektura pokušava uhvatiti potpunu distribuciju podataka korištenjem multimodalnog preslikavnja. Nadograđuje se na idejama kružnih GAN-ova i UNIT modela. Cikličkom konzistencijom prisiljava mrežu da odbaci nepotrebne smetnje, a preslikavanjem na latentni prostor iz podataka izvlači korelacije koje ih vežu unutar kolekcije. Dodatno, rastavljanjem latentnog prostora na sadržajni i stilistički podprostor omogućuje joj neviđenu kontrolu nad operacijama koje obavlja -- od svih uspoređenih metoda daje nadaleko najbolje rezultate u mnogim područjima.
+
 
 \bibliographystyle{fer}
 \bibliography{literatura}
