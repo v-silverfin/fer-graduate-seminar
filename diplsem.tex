@@ -40,7 +40,7 @@ Najznačajniji pomak u tome području ostvarili su Goodfellow et al. 2014. g. \c
 Dobivena distribucija, osim za generiranje novih primjera, primjenjiva je i na rješavanje prvotno navedenih problema identifikacije značajki na postojećim slikama. Ta fleksibilnost čini ovaj algoritam izuzetno popularnim za istraživanje što je rezultiralo njegovim mnogobrojnim modifikacijama i poboljšanjima.
 \newline
 
-Ovim radom istražit će se različita proširenja kojima se ti modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene.
+Ovim radom istražit će se različita proširenja kojima se ti modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene. S obzirom da se većina  generativnih modela za generiranje slika bazira na dubokim konvolucijskim mrežama, prvo poglavlje počinje kratkim uvidom u njihov rad.
 
 
 %%
@@ -49,28 +49,29 @@ Ovim radom istražit će se različita proširenja kojima se ti modeli prilagođ
 
 
 \chapter{Duboke mreže}
-Posljednjih nekoliko godina, duboko učenje u potpunosti je zamijenilo klasične pristupe rješavanja problema na području umjetne inteligencije. Tu popularnost ostvarilo je zahvaljujući prednosti koju ima naspram klasičnih pristupa, a koja je ponajviše očita u radu s velikim količinama podataka. 
+Posljednjih godina, duboko učenje velikim je dijelom zamijenilo klasične pristupe rješavanja problema na području umjetne inteligencije. Tu popularnost ostvarilo je zahvaljujući većem stupnju samostalnosti naspram klasičnih pristupa. Predost koju joj to pruža je ponajviše očita pri radu s velikim količinama podataka, a uz trendove računarstva koji idu prema ubrzanom gomilanju svih dostupnih informacija, ona će samo rasti.
 
-Dok je starije algoritme strojnog učenja potrebno modificirati ručnom identifikacijom značajki kako bi se primijenili na nove skupove podataka, dubokim mrežama dovoljno je predstaviti te podatke, a one na njih samostalno odluče koje su značajke bitne. Uz trendove računarstva koji idu prema ubrzanom gomilanju svih dostupnih informacija, njihova prednost će samo rasti.
+Dok je starije algoritme strojnog učenja potrebno modificirati ručnom identifikacijom značajki kako bi se primijenili na nove skupove podataka, duboke mreže na temelju dostupnih podataka samostalno odluče koje su značajke bitne. 
 
-Slojevit pristupu rastavljanja podataka na jednostavnije građevne jedinice čini ih posebice prigodnima za rad s problemima hijerarhijske prirode poput slika. 
+Osim toga, slojevit pristupu rastavljanja podataka na jednostavnije građevne jedinice čini ih posebice prigodnima za rad s problemima hijerarhijske prirode poput slika. 
 \newline
 
-\section{Konvolucija}
-Pri radu sa slikama, konvolucijske mreže su jedna od najznačajnijih podvrsta dubokih mreža. Osmišljene s ciljem dohvata lokalnih relacija među podatcima, rješavaju problem nepoželjnog utjecaja pozadine i lokacije značajke unutar slike. 
 
-Ideja konvolucije je da se kao ulaz u neurone sljedećeg sloja dovedu isključivo okolne vrijednosti neurona s prethodnog [Slika \ref{fig:convolution}]. To se odvija tako da se unaprijed definirano kvadratno područje(filter) pomiče (konvoluira) po ulaznim podatcima pri čemu množimo vrijednosti filtera s pripadnim ulaznim vrijednostima. Upravo taj filter je zadužen za identifikaciju određene značajke.
+\section{Konvolucija}
+Pri radu sa slikama, konvolucijske mreže su jedna od najznačajnijih podvrsta dubokih mreža. Osmišljene s ciljem dohvata lokalnih relacija među podatcima, rješavaju problem nepoželjnog utjecaja pozadine te lokacije značajke unutar slike. 
+
+Ideja konvolucije je da se kao ulaz u neurone sljedećeg sloja dovedu isključivo okolne vrijednosti neurona s prethodnog. To se odvija tako da se unaprijed definirano kvadratno područje(filter) pomiče (konvoluira) po ulaznim podatcima  [slika \ref{fig:convolution}] pri čemu množimo vrijednosti filtera s pripadnim ulaznim vrijednostima. Rezultatne vrijednosti filtera predstavljaju reprezentaciju određene značajke i omogućuju njezinu jednostavnu identifikaciju.
 \newline
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{convolution}
-    \caption{Proces konvolucije}
+    \caption{Konvolucija matrice}
     \label{fig:convolution}
 \end{figure}
 
 \section{Primjer konvolucijske mreže}
-Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj se odgovornost filtera raspoređuje tako da je svaki sloj zadužen za jednostavniji potproblem sljedećeg sloja. Prvi slojevi uče atome poput linija, boje ili orijentacije čijim kombiniranjem je moguće raspoznati sve složenije geometrijske oblike. Na slici \ref{fig:dnn} prikazana je duboka neuronska mreža s 5 konvolucijskih slojeva među kojima se odvija sažimanje maksimalnom vrijednošću te dva sloja potpune povezanosti.
+Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj se odgovornost filtera raspoređuje tako da je svaki sloj zadužen za jednostavniji potproblem sljedećeg sloja. Prvi slojevi uče atomarne značajke poput linija, boja ili orijentacije čijim je kombiniranjem moguće raspoznati sve složenije geometrijske oblike. Na slici \ref{fig:dnn} prikazan je primjer duboke neuronske mreže s 5 konvolucijskih slojeva među kojima se odvija sažimanje maksimalnom vrijednošću te dva sloja potpune povezanosti.
 \newline
 
 \begin{figure}[H]
@@ -88,33 +89,47 @@ Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj se odgovornost filt
 
 \chapter{Generativno modeliranje}
 \section{Generativni naspram diskriminativnih algoritama}
-Algoritme za učenje dijelimo na dvije temeljne skupine -- diskriminativne i generativne:
+Jedna od podjela algoritama za učenje dijeli ih na dvije temeljne skupine -- diskriminativne i generativne:
 \newline
 
 % setting item mark to bullet
 \renewcommand{\labelitemi}{\textbullet}
 \begin{itemize} 
-\item Diskriminativni modeli baziraju se na modeliranju isključivo pomoću ulaznih varijabli ($X$) koje direktno mapiraju na ciljne vrijednosti ($Y$) i time uče uvjetnu vjerojatnost $p(Y\mid X)$. Pošto se fokusiraju samo na mapiranju viđenih značajki u klase, ne stvaraju puno pretpostavki o podložnoj distribuciji, ali su vrlo ovisni o kvalitetnim podatcima.
+\item Diskriminativni modeli baziraju se na modeliranju isključivo pomoću ulaznih varijabli ($X$) koje direktno mapiraju na ciljne vrijednosti ($Y$) i time uče uvjetnu vjerojatnost $p(Y|X)$. Pošto se fokusiraju samo na mapiranju viđenih značajki u klase, ne stvaraju puno pretpostavki o podložnoj distribuciji, ali su vrlo ovisni o kvalitetnim podatcima.
 
-\item Generativni modeli rješavaju inverzan problem -- kako dobiti neku značajku $X$ kada znamo kojoj klasi $Y$ pripada, tj. pokušavaju naučiti distribuciju pojedinih klasa $p(X\mid Y)$.
+\item Generativni modeli rješavaju inverzan problem -- kako dobiti neku značajku $X$ kada znamo kojoj klasi $Y$ pripada, tj. pokušavaju naučiti distribuciju pojedinih klasa $p(X|Y)$. Kada imamo dovoljno veliku količinu dobrih podataka, rezultat tog učenja je distribucija samih ulaznih podataka $p(X)$.
 \newline
 \end{itemize}
 
 Drugim riječima, dok diskriminativni modeli pokušavaju pronaći granicu između klasa, generativni modeliraju distribucije pojedinih klasa na temelju kojih mogu uzorkovati nove primjere.
 \newline
 
+
+\newpage
+Kako bi bili u stanju vršiti generativni proces, generativni modeli implicitno obavljaju još jednu radnju -- ekstrakciju bitnih značajki. Pri tome teže da te značajke ne budu samo parametri kojima podešavaju mrežu nego da predstavljaju 'prirodne' karakteristike podataka. 
+\newline
+Ukoliko cilj diskriminativnih modela predstavimo Bayesovom formulom:
+\begin{equation}
+\begin{split}
+p(Y|X) &= \frac{p(Y)p(X|Y)}{p(X)}
+\end{split}
+\end{equation}
+vidljivo je da poznavanje $p(X)$ možemo iskoristiti za poboljšanje rada diskriminativnih modela.
+
 \newpage
 \section{Suparnički modeli}
-Iako je očito da su generativni algoritmi svestranije naravi od diskriminativnih, u praksi se pokazalo kako diskriminativni modeli postižu bolje rezultate od generativnih. Sposobnost generalizacije dolazi s neizbježnim povećanjem složenosti koja proizlazi iz toga što se pronalazak ciljne distribucije u dubokim hijerarhijskim podatcima sastoji od rješavanja problema koje matematički nije moguće izvesti \cite{goodfellow2014generative}. Približna rješenja dobivena su uvođenjem mnogobrojnih aproksimacija, no nažalost, posljedica toga je da optimum dobivenog modela nikad neće biti dobar kao što bi bio onaj s pravim rješenjem.
+Iako je očito da su generativni algoritmi svestranije naravi od diskriminativnih, u praksi se pokazalo da uz ručnu optimizaciju diskriminativni modeli postižu bolje rezultate od generativnih. Razlog tome je što sposobnost generalizacije dolazi s neizbježnim povećanjem složenosti, pri čemu najveću zapreku predstavlja pronalazak ciljne distribucije u dubokim hijerarhijskim podatcima.
+
+Naime, problemi od kojih se ona sastoji nije matematički nije moguće izvesti \cite{goodfellow2014generative} pa je jedina mogućnost pronalazak dovoljno slične distribucije. Približna rješenja dobivena su uvođenjem mnogobrojnih aproksimacija, no nažalost, posljedica toga je da optimum dobivenog modela nikad neće biti dobar kao što bi bio onaj s pravim rješenjem.
 \newline
 
-Alternativni pristup ponuđen je u obliku suparničkih modela -- probleme kojima ljudi ne mogu pronaći rješenje, kroz dovoljno velik broj iteracija, moguće je naučiti pomoću dva modela koji se natječu u traženju čim bolje njegove aproksimacije dok ne pogode pravo rješenje. Ovisno o implementaciji, mreža takve arhitekture u stanju je izvesti distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
+Alternativni pristup ljudskoj optimizaciji ponuđen je u obliku suparničkih modela -- probleme kojima ljudi ne mogu pronaći rješenje, kroz dovoljno velik broj iteracija, moguće je naučiti pomoću dva modela koji se natječu u traženju njegove čim bolje aproksimacije dok ne pogode pravo rješenje. Ovisno o implementaciji, mreža takve arhitekture u stanju je izvesti distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
 \newline
 
 
 
 \section{Rad generativnih suparničkih modela}
-Ideja generativnih suparničkih modela bazirana je na učenje mreža kroz minimax igru -- umjesto izravnog rješavanja optimizacijskog problema, GAN sadrži funkciju kojoj mreže paralelno podešavaju ulaze dok ne dođu do stabilne točke u odnosu na maksimum jedne, a minimum strategije druge mreže. 
+Ideja generativnih suparničkih modela bazirana je na učenju mreža kroz minimax igru -- umjesto izravnog rješavanja optimizacijskog problema, GAN sadrži funkciju kojoj dvije mreže paralelno podešavaju ulaze dok ne dođu do stabilne točke u odnosu na maksimum jedne, a minimum strategije druge mreže. 
 \newline
 
 Pola mreže (generator $G$) bavi se stvaranjem novih podataka iz neke jednostavne distribucije $Z$ s ciljem da stvoreni podatci budu čim sličniji stvarnima. 
@@ -134,12 +149,33 @@ Koraci rada GAN-a:
     \centering
     \includegraphics[width=0.9\textwidth]{gan_schema}
     \caption{GAN \cite{goodfellow2016nips}}
-    \label{fig:convolution}
+    \label{fig:gan_schema}
 \end{figure}
 
 \newpage
 \section{GAN-ovi naspram autoenkodera}
-Uz GAN-ove, podjednako važna skupina generativnih modela su autoenkoderi. Ideja iza njihovog rada je da se sastoje od enkodera koji kompresira podatke u latentne varijable te dekodera koji iz tih varijabli ponovo generira ulaznu sliku. Naučenoj mreži možemo mijenjanjem latentnih varijabli vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke (što se može popraviti uz izmjene koje ću obraditi u sljedećim poglavljima).
+Uz GAN-ove, podjednako važna skupina generativnih modela su autoenkoderi. Ideja iza njihovog rada je da se sastoje od enkodera koji kompresira podatke u latentne varijable te dekodera koji iz tih varijabli ponovo generira ulaznu sliku. Primarni cilj takve mreže je postizanje čim veće sličnosti ulaza i njegove kopije na izlazu. Kako je primarni cilj vrlo jednostavan, autoenkoderi se treniraju bez nadzora.
+Najzanimljiviji dio ove arhitekture je skriveni sloj u kojem se nalaze latentne varijable, a koje predstavljaju najbitnije značajke uzoraka za treniranje.
+\newline
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{autoenc}
+    \caption{Autoencoder //TODO cite}
+    \label{fig:autoenc}
+\end{figure}
+
+Naučenoj mreži možemo mijenjanjem latentnih varijabli vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke (što se može popraviti uz izmjene koje će biti obrađene u sljedećim poglavljima).
+\newline
+
+Vrsta autoenkodera koji umjesto mapiranja ulaza na prostor latentnih varijabli mapiraju ulaze na njihovu distribuciju.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{vae}
+    \caption{Autoencoder //TODO cite}
+    \label{fig:vae}
+\end{figure}
 
 Negativna strana varijabilnih autoenkodera je što uzorci koje proizvode imaju dosta anomalija što na slikama rezultira time da više nalikuju na umjetničke slike nego realnu reprezentaciju. Zbog toga primarnu primjenu nalaze u industrijama poput video igara i kompresiji podataka. U istraživanju su i mreže koje ujedinjuju te dvije tehnologije trenirajući dekoder pomoću GAN-a [larsen2015autoencoding].
 
