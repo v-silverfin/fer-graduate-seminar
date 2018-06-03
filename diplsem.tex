@@ -108,6 +108,7 @@ Drugim riječima, dok diskriminativni modeli pokušavaju pronaći granicu izmeđ
 \newpage
 Kako bi bili u stanju vršiti generativni proces, generativni modeli implicitno obavljaju još jednu radnju -- ekstrakciju bitnih značajki. Pri tome teže da te značajke ne budu samo parametri kojima podešavaju mrežu nego da predstavljaju 'prirodne' karakteristike podataka. 
 \newline
+
 Ukoliko cilj diskriminativnih modela predstavimo Bayesovom formulom:
 \begin{equation}
 \begin{split}
@@ -120,10 +121,10 @@ vidljivo je da poznavanje $p(X)$ možemo iskoristiti za poboljšanje rada diskri
 \section{Suparnički modeli}
 Iako je očito da su generativni algoritmi svestranije naravi od diskriminativnih, u praksi se pokazalo da uz ručnu optimizaciju diskriminativni modeli postižu bolje rezultate od generativnih. Razlog tome je što sposobnost generalizacije dolazi s neizbježnim povećanjem složenosti, pri čemu najveću zapreku predstavlja pronalazak ciljne distribucije u dubokim hijerarhijskim podatcima.
 
-Naime, problemi od kojih se ona sastoji nije matematički nije moguće izvesti \cite{goodfellow2014generative} pa je jedina mogućnost pronalazak dovoljno slične distribucije. Približna rješenja dobivena su uvođenjem mnogobrojnih aproksimacija, no nažalost, posljedica toga je da optimum dobivenog modela nikad neće biti dobar kao što bi bio onaj s pravim rješenjem.
+Naime, rješenja problema od kojih se ona sastoji matematički nije moguće izvesti \cite{goodfellow2014generative} pa je jedina mogućnost pronalazak dovoljno slične distribucije. Približna rješenja dobivena su uvođenjem mnogobrojnih aproksimacija, no nažalost, posljedica toga je da optimum dobivenog modela nikad neće biti dobar kao što bi bio onaj s pravim rješenjem.
 \newline
 
-Alternativni pristup ljudskoj optimizaciji ponuđen je u obliku suparničkih modela -- probleme kojima ljudi ne mogu pronaći rješenje, kroz dovoljno velik broj iteracija, moguće je naučiti pomoću dva modela koji se natječu u traženju njegove čim bolje aproksimacije dok ne pogode pravo rješenje. Ovisno o implementaciji, mreža takve arhitekture u stanju je izvesti distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
+Alternativni pristup ručnoj optimizaciji ponuđen je u obliku suparničkih modela -- probleme kojima ljudi ne mogu pronaći rješenje, kroz dovoljno velik broj iteracija, moguće je naučiti pomoću dva modela koji se natječu u traženju njegove čim bolje aproksimacije dok ne pogode pravo rješenje. Ovisno o implementaciji, mreža takve arhitekture u stanju je izvesti distribuciju širokog spektra podataka: slika, govora, muzike, pa čak i pisanih zapisa.
 \newline
 
 
@@ -161,28 +162,28 @@ Najzanimljiviji dio ove arhitekture je skriveni sloj u kojem se nalaze latentne 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{autoenc}
-    \caption{Autoencoder //TODO cite}
+    \caption{Autoenkoder \cite{website:kvfrans}}
     \label{fig:autoenc}
 \end{figure}
 
-Naučenoj mreži možemo mijenjanjem latentnih varijabli vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke (što se može popraviti uz izmjene koje će biti obrađene u sljedećim poglavljima).
-\newline
-
-Vrsta autoenkodera koji umjesto mapiranja ulaza na prostor latentnih varijabli mapiraju ulaze na njihovu distribuciju.
+Dobiveni latentni vektor sažeta je reprezentacija podataka za učenje no iako je koristan za pohranu, nije iskoristiv za generiranje novih, izmjenjenih podataka. Da bi to omogućili, u varijacijskim autoenkoderima uvodimo ograničenje na mrežu da latentni vektor mora ličiti na gausovu distribuciju.
+Način na koji je to implementirano je da zasebno uče parametre normalne distribucije i parametre standardne devijacije.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{vae}
-    \caption{Autoencoder //TODO cite}
+    \caption{Variacijski autoenkoder \cite{website:kvfrans}}
     \label{fig:vae}
 \end{figure}
 
-Negativna strana varijabilnih autoenkodera je što uzorci koje proizvode imaju dosta anomalija što na slikama rezultira time da više nalikuju na umjetničke slike nego realnu reprezentaciju. Zbog toga primarnu primjenu nalaze u industrijama poput video igara i kompresiji podataka. U istraživanju su i mreže koje ujedinjuju te dvije tehnologije trenirajući dekoder pomoću GAN-a [larsen2015autoencoding].
+Latentne vektore iz naučenih varijacijskih enkodera dobivamo uzorkovanjem dobivene distribucije te tako možemo vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke -- što se može popraviti uz izmjene koje će biti obrađene u sljedećim poglavljima.
+
+Negativna strana varijacijskih autoenkodera je što uzorci koje proizvode imaju dosta anomalija. Na slikama se to izgleda tako da više nalikuju na umjetnička djela nego realnu reprezentaciju. Zbog toga primarnu primjenu nalaze u industrijama poput video igara i kompresiji podataka. U istraživanju su i mreže koje ujedinjuju te dvije tehnologije trenirajući dekoder pomoću GAN-a \cite{larsen2015autoencoding}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{vae-gan}
-    \caption{Kombinacija autoenkodera i GAN-a}
+    \caption{Kombinacija autoenkodera i GAN-a \cite{larsen2015autoencoding}}
     \label{fig:vae-gan}
 \end{figure}
 
@@ -377,7 +378,7 @@ Generativni modeli tema su mnogobrojnih istraživanja i vrlo obećavajuća metod
 Uvjetnim suparničkim mrežama pokazano je da osim što više nije potrebno ručno izvoditi funkcije preslikavanja, zadovoljavajuće rezultate možemo dobiti i ako dubokoj mreži prepustimo da sama nauči funkciju gubitka. To je velik korak prema široj adaptaciji ove tehnologije upravo zato što uklanja potrebu za inženjerskim radom i omogućava ljudima poput umjetnika ili znanstvenika iz ne-programerskih područja da ju koriste samostalno.
 \newline
 
-Kada je pak u pitanju translacija bez dostupnih primjera za učenje, što je vrlo čest slučaj, kružni GAN-ovi ostvaruju rezultate usporedne s nadziranim modelima. Osim toga, dovoljno su svestrani da obavljaju zadatke nekolicine drugih mreža: od reoblikovanja objekata, uklanjanja anomalija do kombiniranja više stilova. Mogu čak obavljati i prijenos karakterističnog stila cijelih kolekcija -- kao što je načina crtanja Leonarda da Vincija. 
+Kada je pak u pitanju translacija bez dostupnih primjera za učenje, kružni GAN-ovi ostvaruju rezultate usporedne s nadziranim modelima. Osim toga, dovoljno su svestrani da obavljaju zadatke nekolicine drugih mreža: od preoblikovanja objekata, uklanjanja anomalija do kombiniranja više stilova. Mogu čak obavljati i prijenos karakterističnog stila cijelih kolekcija -- kao što je načina crtanja Leonarda da Vincija. 
 
 Kružni GAN-ovi zakazuju kada su podatci previše raznoliki i nestrukturirani. Zbune se kada su objekti preklopljeni, poput konja i jahača ili stabala ispred zgrada. Predložena riješenja tog problema su dodavanje malog broja označenih primjera te korištenje semantičke segmentacije pri učenju. 
 
