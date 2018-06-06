@@ -161,28 +161,31 @@ Najzanimljiviji dio ove arhitekture je skriveni sloj u kojem se nalaze latentne 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{autoenc}
+    \includegraphics[width=1\textwidth]{autoenc}
     \caption{Autoenkoder \cite{website:kvfrans}}
     \label{fig:autoenc}
 \end{figure}
 
-Dobiveni latentni vektor sažeta je reprezentacija podataka za učenje no iako je koristan za pohranu, nije iskoristiv za generiranje novih, izmjenjenih podataka. Da bi to omogućili, u varijacijskim autoenkoderima uvodimo ograničenje na mrežu da latentni vektor mora ličiti na gausovu distribuciju.
-Način na koji je to implementirano je da zasebno uče parametre normalne distribucije i parametre standardne devijacije.
+Dobiveni latentni vektor sažeta je reprezentacija podataka za učenje no iako je koristan za pohranu, nije iskoristiv za generiranje novih, izmjenjenih podataka. 
+
+Da bi to omogućili, uvodimo ograničenje na mrežu da latentni vektor mora ličiti na gausovu distribuciju iz koje je moguće uzorkovati podatke. Takva mreža naziva se varijacijski autoenkoder (VAE), a cilj joj je odvojeno naučiti parametre normalne distribucije te parametre standardne devijacije.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{vae}
+    \includegraphics[width=1\textwidth]{vae}
     \caption{Variacijski autoenkoder \cite{website:kvfrans}}
     \label{fig:vae}
 \end{figure}
 
+\newpage
 Latentne vektore iz naučenih varijacijskih enkodera dobivamo uzorkovanjem dobivene distribucije te tako možemo vrlo precizno zadati kakve podatke želimo generirati. To im je ujedno i glavna prednost nad GAN-ovima koji generiraju dosta nasumične uzorke -- što se može popraviti uz izmjene koje će biti obrađene u sljedećim poglavljima.
+\newline
 
 Negativna strana varijacijskih autoenkodera je što uzorci koje proizvode imaju dosta anomalija. Na slikama se to izgleda tako da više nalikuju na umjetnička djela nego realnu reprezentaciju. Zbog toga primarnu primjenu nalaze u industrijama poput video igara i kompresiji podataka. U istraživanju su i mreže koje ujedinjuju te dvije tehnologije trenirajući dekoder pomoću GAN-a \cite{larsen2015autoencoding}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{vae-gan}
+    \includegraphics[width=0.8\textwidth]{vae-gan}
     \caption{Kombinacija autoenkodera i GAN-a \cite{larsen2015autoencoding}}
     \label{fig:vae-gan}
 \end{figure}
@@ -195,24 +198,30 @@ Negativna strana varijacijskih autoenkodera je što uzorci koje proizvode imaju 
 
 \chapter{Uvjetne generativne mreže}
 Kao što je spomenuto u prošlom poglavlju, jedna od većih mana generativnih suparničkih mreža je što generiraju poprilično nasumične uzorke. Pošto većina problema u praksi zahtijeva kontrolu nad tim procesom, jedno od najranijih proširenja GAN-ova vezano je upravo uz kontrolu generiranja podataka. 
+\newline
 
 Postavljanjem uvjeta na ulaz generativnog modela, moguće je usmjeriti generativni proces. Vrste uvjeta mogu biti raznolike: oznake klasa, skice, dubinske mape pa čak i cijele slike.
+\newline
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{isola2017-conditioned-generation}
-    \caption{Primjeri uvjetovane generacije}
+    \caption{Primjeri uvjetovane generacije \cite{isola2017image}}
     \label{fig:isola2017-conditioned-generation}
 \end{figure}
 
 \newpage
 \section{Generalizacija problema prevođenja slike}
 Jedan način razmatranja slika je kao višeslojni podatak u kojem se osnovni sadržaj obogaćuje raznolikim stilovima i načinima reprezentacije. 
-Jednako kao što riječ možemo prevesti na više jezika zadržavajući određeni kontekst, ista scena može se prikazati kao dubinska mapa, RGB slika ili semantička segmentacija. Sukladno toj ideji, mnoge probleme procesiranja slika moguće je svesti na translaciju slike u drugačiju reprezentaciju. Neovisno radi li se o uklanjanju anomalija, ispravku boja ili izmjeni pozadine, u srži tih procesa može se prepoznati jedinstven problem: pronaći funkciju preslikavanja piksela u piksel. Upravo ta ideja potaknula je Isolu et al. da osmisle uvjetne generativne mreže kao generalno rješenje problema prevođenja slike \cite{isola2017image}.
+Jednako kao što riječ možemo prevesti na više jezika zadržavajući određeni kontekst, ista scena može se prikazati kao dubinska mapa, RGB slika ili semantička segmentacija. 
+\newline
+
+Sukladno toj ideji, mnoge probleme procesiranja slika moguće je svesti na translaciju slike u drugačiju reprezentaciju. Neovisno radi li se o uklanjanju anomalija, ispravku boja ili izmjeni pozadine, u srži tih procesa može se prepoznati jedinstven problem: pronaći funkciju preslikavanja piksela u piksel. Upravo ta ideja potaknula je Isolu et al. da osmisle uvjetne generativne mreže kao generalno rješenje problema prevođenja slike \cite{isola2017image}.
 \newline
 
 \section{Pristup uvjetovanog prevođenja slike}
 Zadavanje cilja neuronskim mrežama, a time i uspjeh njihovog učenja u potpunosti je bazirano na formulaciji funkcije gubitka. Lošim definiranjem te funkcije, neovisno o količini raspoloživih resursa i tipu mreže, nikad nećemo dobiti realistične rezultate. U GAN-ovima je ona zadana dosta općenito -- jesu li generirani podatci različiti od stvarnih uzoraka. Takva definicija omogućuje joj da se prilagodi podatcima te kao takva omogućuje generalizaciju nad setovima problema koji bi u suprotnom zahtijevali vrlo drugačije formulacije gubitka. 
+\newline
 
 Dok standardni GAN-ovi odbacuju sva rješenja koja se mogu razlikovati od stvarnosti generirajući slike $y$ iz nasumičnog šuma $z$ : $G: z \rightarrow y$, uvjetovani GAN-ovi dodatno usmjeravaju dobra rješenja prema željenoj distribuciji značajki dodavanjem uvjeta $x$ na šum $z$: $G: {x,z} \rightarrow y$ \cite{isola2017image}.
 
@@ -251,11 +260,12 @@ Uvjetovanjem dodatnim informacijama $y$ na obje mreže taj cilj mijenja se u :
 
 \chapter{Translacija bez uparenih primjera za učenje}
 Učenje GAN-ova iz prethodnih poglavlja, kao i mnogih drugih algoritama, ovisi o postojanju velikih podatkovnih skupova označenih parova slika. S obzirom na to da izrada tih skupova iziskuje veliku količinu vremena i manualnog ljudskog rada, u mnogim slučajevima nam oni nisu dostupni.
+\newline
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{zhu2017unpaired-paired-vs-unpaired}
-    \caption{Parovi podataka (lijevo) ${\{x_i,y_i\}}_{i=1}^N$ te neupareni setovi (desno). }
+    \caption{Parovi podataka (lijevo) ${\{x_i,y_i\}}_{i=1}^N$ te neupareni setovi (desno) \cite{zhu2017unpaired}}
     \label{fig:zhu2017unpaired-paired-vs-unpaired}
 \end{figure}
 
@@ -271,7 +281,7 @@ Definirajući inverz funkcije $G$: $F: Y \rightarrow X$, funkciju gubitka osnovn
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{zhu2017unpaired-reconstruction}
-    \caption{Primjeri nenadziranog GAN-a s i bez rekonstrukcije}
+    \caption{Primjeri nenadziranog GAN-a s i bez rekonstrukcije \cite{zhu2017unpaired}}
     \label{fig:zhu2017unpaired-reconstruction}
 \end{figure}
 
@@ -307,8 +317,10 @@ Kako bi smanjili prostor mogućih funkcija preslikavanja, cikličkom dosljednoš
 \newpage
 \section{Unimodalna nenadzirana translacija (UNIT)} [liu2017unsupervised]
 Analizirajući translaciju slike s gledišta modeliranja vjerojatnosti, cilj je odrediti združenu distribuciju više različitih domena slika. U slučaju nenadziranog učenja, izvorni i ciljni skupovi uzorkovani su iz marginalnih distribucija (tj. u potpunosti neovisno jedan o drugome), a združenih distribucija koje iz njih možemo izvesti ima beskonačno mnogo.
+\newline
 
 Skup znanstvenika iz NVIDIA-e je tome pristupio preslikavajući i izvornu i ciljnu domenu na zajednički prostor latentnih varijabli čime su uveli pretpostavku da postoje zajedničke varijable o kojima ovise obje distribucije. 
+\newline
 
 Tehnološki su to ostvarili umrežavanjem GAN-a i variacijskog autoenkodera. GAN stvara latentni prostor dijeljenjem težina generatora i diskriminatora nad kojim varijacijski autoenkoder određuje relacije između domena. 
 Osim toga, pokazali su \cite{liu2017unsupervised} i da dijeljeni latentni prostor implicira cikličku konzistenciju objašnjenu u poglavlju o kružnim GAN-ovima.
@@ -317,7 +329,7 @@ Osim toga, pokazali su \cite{liu2017unsupervised} i da dijeljeni latentni prosto
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{liu2017unsupervised-unit}
-    \caption{ TODO }
+    \caption{ TODO \cite{liu2017unsupervised}}
     \label{fig:liu2017unsupervised-unit}
 \end{figure}
 
@@ -325,6 +337,7 @@ Osim toga, pokazali su \cite{liu2017unsupervised} i da dijeljeni latentni prosto
 \newpage
 \section{Multimodalna nenadzirana translacija (MUNIT)}
 Iako prethodne sekcije opisuju načine nenadziranog učenja, pri radu s njima može se primjetiti da nisu generičko rješenje tog problema. Naime, kružni GAN-ovi se baziraju na pretpostavci da je preslikavanje između domena determinističko zbog čega imaju manu da im nedostaje raznolikosti u translatiranim izlazima, a UNIT modeli uče unimodalno preslikavanje. Ne uzimajući u obzir da je uvjetna distribucija preslikavanja slika između dvije domene inherentno multimodalna \cite{huang2018multimodal}, imaju posljedicu  da pri generiranju vrlo teško stvaraju vidljivo različite uzorke. 
+\newline
 
 MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajke koje su domenski invarijantne te na one koje sadrže domenski specifična svojstva. Zatim se pri generiranju jednostavno domenski invarijantne značajke kombiniraju s nasumičnim stilskim kodom uzorkovanim s ciljne domene.
 \newline
@@ -332,7 +345,7 @@ MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajk
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{huang2018multimodal-munit}
-    \caption{ TODO }
+    \caption{ TODO \cite{huang2018multimodal}}
     \label{fig:huang2018multimodal-munit}
 \end{figure}
 
@@ -359,6 +372,7 @@ Za prijenos stila formulira se optimizacijski problem koji, počevši od nasumi�
 \item Pošto su neuronske mreže vrlo samostalne po pitanju kako i koje značajke uče, svaki sloj uz stilističke značajke sadrži i neke strukturne. Zbog toga rezultatna slika sadrži distorzije u strukturnom sadržaju što ju čini nerealističnom.
 \end{enumerate}
 
+\newpage
 \section{Očuvanje strukture}
 Sitne izmjene u linijama i teksturama koje CNN-ovi vrše pri prijenosu stila posljedica je toga što izravno mijenjaju vrijednosti piksela. Ako ne želimo izgubiti originalni sadržaj fotografije, dovoljno je postaviti uvjet na rad mreže da izmjene može unositi isključivo na prostoru boja. No to nam još uvijek ne garantira da će fotografija zadržati realističnost.
 
@@ -397,7 +411,7 @@ Mnogi problemi u procesiranju slika odnose se na translaciju ulazne slike u žel
 \kljucnerijeci{translacija slike, prijenos stila, varijacijski autoenkoderi, uvjetni GAN-ovi, kružni GAN-ovi, UNIT, MUNIT}
 \end{sazetak}
 
-\engtitle{Image to image generation using CycleGANs}
+\engtitle{Generative adversarial networks for image translation}
 \begin{abstract}
 Many problems in image processing revolve around translation of the input image. Most of existing architectures are based on generative adversarial networks extended with many modifications according to specific problem they solve. Conditional generative networks are capable of learning loss function by themselves, CycleGANs learn translation both from input to output but also otherway. If the network is restricted on color space, we can prevent any modifications on structural information which is shown through multimodal unsupervised translation model. This seminar gives quick overview and introduction into different kinds of GANs for image translation, their specifics and use cases.
 
