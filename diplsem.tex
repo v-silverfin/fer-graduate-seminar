@@ -40,7 +40,8 @@ Najznačajniji pomak u tome području ostvarili su Goodfellow et al. 2014. g. \c
 Dobivena distribucija, osim za generiranje novih primjera, primjenjiva je i na rješavanje prvotno navedenih problema identifikacije značajki na postojećim slikama. Ta fleksibilnost čini ovaj algoritam izuzetno popularnim za istraživanje što je rezultiralo njegovim mnogobrojnim modifikacijama i poboljšanjima.
 \newline
 
-Ovim radom istražit će se različita proširenja kojima se ti modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene. S obzirom da se većina  generativnih modela za generiranje slika bazira na dubokim konvolucijskim mrežama, prvo poglavlje počinje kratkim uvidom u njihov rad.
+S obzirom na to da se većina  generativnih modela za generiranje slika bazira na dubokim konvolucijskim mrežama, prvo poglavlje počinje kratkim uvidom u njihov rad te se zatim razmatra problem prijenosa stila i ciljevi koje njime želimo ostvariti.
+U ostatku rada istražit će se različita proširenja kojima se generativni suparnički modeli prilagođavaju specifičnim problemima, njihove karakteristike i primjene. 
 
 
 %%
@@ -49,7 +50,7 @@ Ovim radom istražit će se različita proširenja kojima se ti modeli prilagođ
 
 
 \chapter{Duboke mreže}
-Posljednjih godina, duboko učenje velikim je dijelom zamijenilo klasične pristupe rješavanja problema na području umjetne inteligencije. Tu popularnost ostvarilo je zahvaljujući većem stupnju samostalnosti naspram klasičnih pristupa. Predost koju joj to pruža je ponajviše očita pri radu s velikim količinama podataka, a uz trendove računarstva koji idu prema ubrzanom gomilanju svih dostupnih informacija, ona će samo rasti.
+Posljednjih godina, duboko učenje velikim je dijelom zamijenilo klasične pristupe rješavanja problema na području umjetne inteligencije. Tu popularnost ostvarilo je zahvaljujući većem stupnju samostalnosti naspram klasičnih pristupa. Prednost koju joj to pruža je ponajviše očita pri radu s velikim količinama podataka, a uz trendove računarstva koji idu prema ubrzanom gomilanju svih dostupnih informacija, ona će samo rasti.
 
 Dok je starije algoritme strojnog učenja potrebno modificirati ručnom identifikacijom značajki kako bi se primijenili na nove skupove podataka, duboke mreže na temelju dostupnih podataka samostalno odluče koje su značajke bitne. 
 
@@ -60,7 +61,7 @@ Osim toga, slojevit pristupu rastavljanja podataka na jednostavnije građevne je
 \section{Konvolucija}
 Pri radu sa slikama, konvolucijske mreže su jedna od najznačajnijih podvrsta dubokih mreža. Osmišljene s ciljem dohvata lokalnih relacija među podatcima, rješavaju problem nepoželjnog utjecaja pozadine te lokacije značajke unutar slike. 
 
-Ideja konvolucije je da se kao ulaz u neurone sljedećeg sloja dovedu isključivo okolne vrijednosti neurona s prethodnog. To se odvija tako da se unaprijed definirano kvadratno područje(filter) pomiče (konvoluira) po ulaznim podatcima  [slika \ref{fig:convolution}] pri čemu množimo vrijednosti filtera s pripadnim ulaznim vrijednostima. Rezultatne vrijednosti filtera predstavljaju reprezentaciju određene značajke i omogućuju njezinu jednostavnu identifikaciju.
+Ideja konvolucije je da se kao ulaz u neurone sljedećeg sloja dovedu isključivo okolne vrijednosti neurona s prethodnog. To se odvija tako da se unaprijed definirano kvadratno područje(filter) pomiče (konvoluira) po ulaznim podatcima  [slika \ref{fig:convolution}] pri čemu množimo vrijednosti filtera s pripadnim ulaznim vrijednostima. Rezultantne vrijednosti filtera predstavljaju reprezentaciju određene značajke i omogućuju njezinu jednostavnu identifikaciju.
 \newline
 
 \begin{figure}[H]
@@ -83,6 +84,33 @@ Nizanjem konvolucijskih slojeva dobivamo arhitekturu u kojoj se odgovornost filt
 
 
 %%
+% 	STYLE TRANSFER
+%%
+
+
+\chapter{Prijenos stila}
+Metode prijenosa stila bave se modificiranjem stilističke perspektive slike uz očuvanje sadržaja. Generalno te procese možemo podijeliti na prijenos temeljem jednog primjera te na prijenos zajedničkog stila neke kolekcije. Dok se klasični pristupi baziraju na prvoj skupini, neuronske mreže bolje rezultate postižu na drugoj. 
+
+\section{Konvolucijski pristup}
+Korištenje konvolucijskih mreža (CNN) za prijenos značajki oslanjaja se na činjenicu da se konvolucijski slojevi specijaliziraju za određene značajke. Pošto pamte značajke u obliku aktivacijskih mapa po slojevima, lako je izolirati karakteristike koje želimo prenijeti na novu sliku. 
+
+Za prijenos stila formulira se optimizacijski problem koji, počevši od nasumičnog šuma, radi izmjene kojima istovremeno minimizira odstupanja neuronskih aktivacija od osnovne slike te od značajki koje se prenose. Nažalost, CNN-ovi imaju dvije nepopravljive mane:
+
+\begin{enumerate} 
+\item Ograničeni su izborom stilova koje mogu prenijeti jer je svaka mreža specijalizirana za isključivo jedan.
+\item Pošto su neuronske mreže vrlo samostalne po pitanju kako i koje značajke uče, svaki sloj uz stilističke značajke sadrži i neke strukturne. Zbog toga rezultatna slika sadrži distorzije u strukturnom sadržaju što ju čini nerealističnom.
+\end{enumerate}
+
+\newpage
+\section{Očuvanje strukture}
+Sitne izmjene u linijama i teksturama koje CNN-ovi vrše pri prijenosu stila posljedica je toga što izravno mijenjaju vrijednosti piksela. Ako ne želimo izgubiti originalni sadržaj fotografije, dovoljno je postaviti uvjet na rad mreže da izmjene može unositi isključivo na prostoru boja. No to nam još uvijek ne garantira da će fotografija zadržati realističnost.
+
+\section{Lokalizacija stila i očuvanje konteksta}
+Postoji još jedan faktor koji povećava kompleksnost cijelog procesa: ciljano ponašanje prijenosa stila trebalo bi se držati konteksta izmjene. Na primjer, ako se na fotografiji nalaze livada i oblaci, modifikacije nad livadom moraju biti povezane sa stilom livade na referentnoj slici, a ne da povuku stil s oblaka. 
+Za CNN, postoje radovi koji to uspješno rade usmjeravanjem procesa temeljem semantičke segmentacije \cite{luan2017deep}. Osim što ovise o zasebnim mrežama koje bi segmentirale sadržaj, potrebno je i ručno obraditi set raspoloživih labela.
+
+
+%%
 % 	GENERATIVE MODELLING
 %%
 
@@ -97,7 +125,7 @@ Jedna od podjela algoritama za učenje dijeli ih na dvije temeljne skupine -- di
 \begin{itemize} 
 \item Diskriminativni modeli baziraju se na modeliranju isključivo pomoću ulaznih varijabli ($X$) koje direktno mapiraju na ciljne vrijednosti ($Y$) i time uče uvjetnu vjerojatnost $p(Y|X)$. Pošto se fokusiraju samo na mapiranju viđenih značajki u klase, ne stvaraju puno pretpostavki o podložnoj distribuciji, ali su vrlo ovisni o kvalitetnim podatcima.
 
-\item Generativni modeli rješavaju inverzan problem -- kako dobiti neku značajku $X$ kada znamo kojoj klasi $Y$ pripada, tj. pokušavaju naučiti distribuciju pojedinih klasa $p(X|Y)$. Kada imamo dovoljno veliku količinu dobrih podataka, rezultat tog učenja je distribucija samih ulaznih podataka $p(X)$.
+\item Generativni modeli rješavaju inverzan problem -- kako dobiti neku značajku $X$ kada znamo kojoj klasi $Y$ pripada, tj. pokušavaju naučiti distribuciju podataka pojedinih klasa $p(X|Y)$. Kada imamo dovoljno veliku količinu dobrih podataka, rezultat tog učenja je  distribucija $p(X)$.
 \newline
 \end{itemize}
 
@@ -109,7 +137,7 @@ Drugim riječima, dok diskriminativni modeli pokušavaju pronaći granicu izmeđ
 Kako bi bili u stanju vršiti generativni proces, generativni modeli implicitno obavljaju još jednu radnju -- ekstrakciju bitnih značajki. Pri tome teže da te značajke ne budu samo parametri kojima podešavaju mrežu nego da predstavljaju 'prirodne' karakteristike podataka. 
 \newline
 
-Ukoliko cilj diskriminativnih modela predstavimo Bayesovom formulom:
+Ako cilj diskriminativnih modela predstavimo Bayesovom formulom:
 \begin{equation}
 \begin{split}
 p(Y|X) &= \frac{p(Y)p(X|Y)}{p(X)}
@@ -142,7 +170,7 @@ Paralelno s njegovim radom, druga polovica (diskriminator $D$) pokušava evaluir
 Koraci rada GAN-a:
 \begin{enumerate} 
 \item Generator $G$ iz nasumičnih brojeva (šum) $Z$ stvara sliku $G(Z)$
-\item Ta slika se zajedno sa uzorcima skupa stvarnih podataka $Y$ dovodi na ulaz diskriminatora $D$
+\item Ta slika se zajedno s uzorcima skupa stvarnih podataka $Y$ dovodi na ulaz diskriminatora $D$
 \item Diskriminator $D$ određuje postotak vjerojatnosti da je slika $G(Z)$ prava
 \end{enumerate}
 
@@ -166,9 +194,9 @@ Najzanimljiviji dio ove arhitekture je skriveni sloj u kojem se nalaze latentne 
     \label{fig:autoenc}
 \end{figure}
 
-Dobiveni latentni vektor sažeta je reprezentacija podataka za učenje no iako je koristan za pohranu, nije iskoristiv za generiranje novih, izmjenjenih podataka. 
+Dobiveni latentni vektor sažeta je reprezentacija podataka za učenje no iako je koristan za pohranu, nije iskoristiv za generiranje novih, izmijenjenih podataka. 
 
-Da bi to omogućili, uvodimo ograničenje na mrežu da latentni vektor mora ličiti na gausovu distribuciju iz koje je moguće uzorkovati podatke. Takva mreža naziva se varijacijski autoenkoder (VAE), a cilj joj je odvojeno naučiti parametre normalne distribucije te parametre standardne devijacije.
+Da bi to omogućili, clij mreže mijenjamo da umjesto latentnih vektora pokušava naučiti Gausovu distribuciju iz koje je moguće uzorkovati podatke. Takva mreža naziva se varijacijski autoenkoder (VAE).
 
 \begin{figure}[H]
     \centering
@@ -186,7 +214,7 @@ Negativna strana varijacijskih autoenkodera je što uzorci koje proizvode imaju 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{vae-gan}
-    \caption{Kombinacija autoenkodera i GAN-a \cite{larsen2015autoencoding}}
+    \caption{Primjer kombinacije autoenkodera i GAN-a \cite{larsen2015autoencoding}}
     \label{fig:vae-gan}
 \end{figure}
 
@@ -310,12 +338,20 @@ Kako bi smanjili prostor mogućih funkcija preslikavanja, cikličkom dosljednoš
 \end{split}
 \end{equation}
 
-\subsection{Prednosti}
 
+Udruživanjem tih gubitaka, cjelokupni gubitak kružnih GAN-ova je:
+
+\begin{equation}
+\begin{split}
+\Lagr(G, F, D_{X}, D_{Y}) &= \Lagr_{GAN}(G, D_{Y}) \\
+			   &+ \Lagr_{GAN}(F, D_{X}) \\
+			   &+ \lambda \Lagr_{cyc}(G, F)
+\end{split}
+\end{equation}
 
 
 \newpage
-\section{Unimodalna nenadzirana translacija (UNIT)} [liu2017unsupervised]
+\section{Unimodalna nenadzirana translacija (UNIT)} 
 Analizirajući translaciju slike s gledišta modeliranja vjerojatnosti, cilj je odrediti združenu distribuciju više različitih domena slika. U slučaju nenadziranog učenja, izvorni i ciljni skupovi uzorkovani su iz marginalnih distribucija (tj. u potpunosti neovisno jedan o drugome), a združenih distribucija koje iz njih možemo izvesti ima beskonačno mnogo.
 \newline
 
@@ -328,9 +364,9 @@ Osim toga, pokazali su \cite{liu2017unsupervised} i da dijeljeni latentni prosto
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{liu2017unsupervised-unit}
-    \caption{ TODO \cite{liu2017unsupervised}}
-    \label{fig:liu2017unsupervised-unit}
+    \includegraphics[width=0.8\textwidth]{liu2017unsupervised-unit-latent}
+    \caption{Mapping images to latent space \cite{liu2017unsupervised}}
+    \label{fig:liu2017unsupervised-unit-latent}
 \end{figure}
 
 
@@ -345,7 +381,7 @@ MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajk
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{huang2018multimodal-munit}
-    \caption{ TODO \cite{huang2018multimodal}}
+    \caption{a) Rastavljanje uzoraka na sadržajne i stilističke značajke b) koraci pri prijenosu stila MUNIT-om \cite{huang2018multimodal}}
     \label{fig:huang2018multimodal-munit}
 \end{figure}
 
@@ -353,32 +389,6 @@ MUNIT model pretpostavlja da se reprezentacija slike može rastaviti na značajk
 Pri podjeli reprezentacija sadržaja i stila, sadržaj se odnosi na prostornu strukturu dok je stil ograničen na rendering te strukture.
 %A concurrent work also recognizes this limitation and propose an extension of CycleGAN for multimodal mapping \cite{almahairi2018augmented}
 
-
-%%
-% 	STYLE TRANSFER
-%%
-
-
-\chapter{Prijenos stila}
-Metode prijenosa stila bave se modificiranjem stilističke perspektive slike uz očuvanje sadržaja. Generalno te procese možemo podijeliti na prijenos temeljem jednog primjera te na prijenos zajedničkog stila neke kolekcije. Dok se klasični pristupi baziraju na prvoj skupini, neuronske mreže bolje rezultate postižu na drugoj. 
-
-\section{Konvolucijski pristup}
-Korištenje konvolucijskih mreža (CNN) za prijenos značajki oslanjaja se na činjenicu da se konvolucijski slojevi specijaliziraju za određene značajke. Pošto pamte značajke u obliku aktivacijskih mapa po slojevima, lako je izolirati karakteristike koje želimo prenijeti na novu sliku. 
-
-Za prijenos stila formulira se optimizacijski problem koji, počevši od nasumičnog šuma, radi izmjene kojima istovremeno minimizira odstupanja neuronskih aktivacija od osnovne slike te od značajki koje se prenose. Nažalost, CNN-ovi imaju dvije nepopravljive mane:
-
-\begin{enumerate} 
-\item Ograničeni su izborom stilova koje mogu prenijeti jer je svaka mreža specijalizirana za isključivo jedan.
-\item Pošto su neuronske mreže vrlo samostalne po pitanju kako i koje značajke uče, svaki sloj uz stilističke značajke sadrži i neke strukturne. Zbog toga rezultatna slika sadrži distorzije u strukturnom sadržaju što ju čini nerealističnom.
-\end{enumerate}
-
-\newpage
-\section{Očuvanje strukture}
-Sitne izmjene u linijama i teksturama koje CNN-ovi vrše pri prijenosu stila posljedica je toga što izravno mijenjaju vrijednosti piksela. Ako ne želimo izgubiti originalni sadržaj fotografije, dovoljno je postaviti uvjet na rad mreže da izmjene može unositi isključivo na prostoru boja. No to nam još uvijek ne garantira da će fotografija zadržati realističnost.
-
-\section{Lokalizacija stila i očuvanje konteksta} \cite{luan2017deep}
-Postoji još jedan faktor koji povećava kompleksnost cijelog procesa: ciljano ponašanje prijenosa stila trebalo bi se držati konteksta izmjene. Na primjer, ako se na fotografiji nalaze livada i oblaci, modifikacije nad livadom moraju biti povezane sa stilom livade na referentnoj slici, a ne da povuku stil s oblaka. 
-Za CNN, postoje radovi koji to uspješno rade usmjeravanjem procesa temeljem semantičke segmentacije \cite{luan2017deep}. Osim što ovise o zasebnim mrežama koje bi segmentirale sadržaj, potrebno je i ručno obraditi set raspoloživih labela.
 
 %%
 % 	CONCLUSION
@@ -393,6 +403,7 @@ Uvjetnim suparničkim mrežama pokazano je da osim što više nije potrebno ruč
 \newline
 
 Kada je pak u pitanju translacija bez dostupnih primjera za učenje, kružni GAN-ovi ostvaruju rezultate usporedne s nadziranim modelima. Osim toga, dovoljno su svestrani da obavljaju zadatke nekolicine drugih mreža: od preoblikovanja objekata, uklanjanja anomalija do kombiniranja više stilova. Mogu čak obavljati i prijenos karakterističnog stila cijelih kolekcija -- kao što je načina crtanja Leonarda da Vincija. 
+\newline
 
 Kružni GAN-ovi zakazuju kada su podatci previše raznoliki i nestrukturirani. Zbune se kada su objekti preklopljeni, poput konja i jahača ili stabala ispred zgrada. Predložena riješenja tog problema su dodavanje malog broja označenih primjera te korištenje semantičke segmentacije pri učenju. 
 
